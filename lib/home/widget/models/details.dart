@@ -3,7 +3,7 @@ class SearchData {
   String? code;
   String? description;
   String? name;
-  var id;
+  String? id;
 
   SearchData({this.title, this.code, this.description,this.id,this.name});
 

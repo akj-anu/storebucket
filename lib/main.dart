@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:storebucket/home/home.dart';
 import 'package:storebucket/home/widget/login.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
+import 'package:storebucket/project/project.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,16 +28,18 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final Future<FirebaseApp> _init = Firebase.initializeApp();
-  String username='';
+  String username = '';
   @override
   void initState() {
-  getUserName();
+    getUserName();
     super.initState();
   }
-  getUserName()async{
-    username=await UserManager.getUser();
+
+  getUserName() async {
+    username = await UserManager.getUser();
     debugPrint(username);
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -49,7 +52,7 @@ class _MyAppState extends State<MyApp> {
                 return const Center(child: Text("ERROR"));
               }
               if (snapshot.connectionState == ConnectionState.done) {
-                return username==''? const LoginScreen():const Home();
+                return username == '' ? const LoginScreen() : const Home();
               }
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());

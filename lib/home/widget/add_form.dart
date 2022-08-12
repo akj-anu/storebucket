@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:storebucket/home/home.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 enum chooseType { doc, project }
 
@@ -14,6 +13,7 @@ class AddForm extends StatefulWidget {
 }
 
 class _AddFormState extends State<AddForm> {
+  List<String> linkList = [];
   bool isDoc = true;
   Stream<QuerySnapshot<Object?>>? searchData;
   final TextEditingController _titleController =
@@ -91,18 +91,29 @@ class _AddFormState extends State<AddForm> {
     }
 
     addproject() {
-      project.add({
-        'title': title,
-        'description': description,
-        'code': code,
-        'name': userName,
-      });
+      project
+          .add({
+            'title': title,
+            'description': description,
+            'code': code,
+            'name': userName,
+            'links': linkList,
+          })
+          .then((value) => {
+                snackMsg(color: Colors.green, text: "Project Added"),
+                setState(() {})
+              })
+          .catchError((error) {
+            snackMsg(color: Colors.red, text: "Failed to add project");
+            debugPrint("Failed to add project: $error");
+          });
     }
 
     _add() {
       isDoc ? addData() : addproject();
     }
 
+    _addLink() {}
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
@@ -155,14 +166,14 @@ class _AddFormState extends State<AddForm> {
               child: TextField(
                 style: const TextStyle(color: Colors.white),
                 controller: _titleController,
-                decoration: const InputDecoration(
-                    hintText: 'TITLE',
+                decoration: InputDecoration(
+                    hintText: isDoc ? 'TITLE' : 'PROJECT NAME',
                     focusColor: Colors.white,
-                    enabledBorder: OutlineInputBorder(
+                    enabledBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white)),
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white)),
-                    hintStyle: TextStyle(color: Colors.white)),
+                    hintStyle: const TextStyle(color: Colors.white)),
                 onChanged: (text) {
                   title = text;
                 },
@@ -194,32 +205,92 @@ class _AddFormState extends State<AddForm> {
             const SizedBox(
               height: 5,
             ),
-            Container(
-              height: 180,
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white),
-                  borderRadius: BorderRadius.circular(5)),
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: TextFormField(
-                style: const TextStyle(color: Colors.white),
-                controller: _codeController,
-                maxLength: null,
-                maxLines: null,
-                decoration: const InputDecoration(
-                    hintText: 'CODE',
-                    focusColor: Colors.white,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    // enabledBorder: OutlineInputBorder(
-                    //     borderSide: BorderSide(color: Colors.white)),
-                    // focusedBorder: OutlineInputBorder(
-                    //     borderSide: BorderSide(color: Colors.white)),
-                    hintStyle: TextStyle(color: Colors.white)),
-                onChanged: (text) {
-                  code = text;
-                },
-              ),
-            ),
+            !isDoc
+                ? SizedBox(
+                    height: 80,
+                    child: TextField(
+                      style: const TextStyle(color: Colors.white),
+                      controller: _discriController,
+                      maxLength: null,
+                      maxLines: null,
+                      decoration: const InputDecoration(
+                          hintText: 'Link Title',
+                          focusColor: Colors.white,
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                          hintStyle: TextStyle(color: Colors.white)),
+                      onChanged: (text) {
+                        description = text;
+                      },
+                    ),
+                  )
+                : const SizedBox(),
+            !isDoc
+                ? const SizedBox(
+                    height: 5,
+                  )
+                : const SizedBox(),
+            !isDoc
+                ? SizedBox(
+                    height: 80,
+                    child: TextField(
+                      style: const TextStyle(color: Colors.white),
+                      controller: _discriController,
+                      maxLength: null,
+                      maxLines: null,
+                      decoration: const InputDecoration(
+                          hintText: 'Link',
+                          focusColor: Colors.white,
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                          hintStyle: TextStyle(color: Colors.white)),
+                      onChanged: (text) {
+                        description = text;
+                      },
+                    ),
+                  )
+                : const SizedBox(),
+            !isDoc
+                ? const SizedBox(
+                    height: 5,
+                  )
+                : const SizedBox(),
+            isDoc
+                ? Container(
+                    height: 180,
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(5)),
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TextFormField(
+                      style: const TextStyle(color: Colors.white),
+                      controller: _codeController,
+                      maxLength: null,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                          hintText: isDoc ? 'CODE' : 'UI/UX LINKS AND GIT URL',
+                          focusColor: Colors.white,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          hintStyle: const TextStyle(color: Colors.white)),
+                      onChanged: (text) {
+                        code = text;
+                      },
+                    ),
+                  )
+                : const SizedBox(),
+            !isDoc
+                ? SizedBox(
+                    width: 200,
+                    height: 40,
+                    child: ElevatedButton(
+                        onPressed: _addLink, child: const Text("ADD LINK")),
+                  )
+                : const SizedBox(),
             const SizedBox(
               height: 30,
             ),

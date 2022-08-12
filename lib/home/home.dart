@@ -8,6 +8,7 @@ import 'package:storebucket/home/widget/details.dart';
 import 'package:storebucket/home/widget/login.dart';
 import 'package:storebucket/home/widget/models/details.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
+import 'package:storebucket/project/project.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -76,6 +77,24 @@ class _HomeState extends State<Home> {
             ],
           ),
           actions: [
+            //  ElevatedButton(
+            //     style: ButtonStyle(
+            //       backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
+            //     ),
+            //     onPressed: () {},
+            //     child: const Text("DASHBOARD")),
+            ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
+                ),
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (context) {
+                    return const Project();
+                  }), (route) => false);
+                  // Navigator.push(context, );
+                },
+                child: const Text("PROJECTS")),
             ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
@@ -202,6 +221,7 @@ class _HomeState extends State<Home> {
                               stream: _usersStream,
                               builder: (BuildContext context,
                                   AsyncSnapshot<QuerySnapshot> snapshot) {
+                                    
                                 if (snapshot.hasError) {
                                   return const Text('Something went wrong');
                                 }
@@ -539,7 +559,7 @@ class _HomeState extends State<Home> {
     String id = "";
     for (int i = 0; i < Home.searchDataList!.length; i++) {
       if (title == Home.searchDataList![i].title) {
-        id = Home.searchDataList![i].id;
+        id = Home.searchDataList![i].id!;
       }
     }
     log("Document : " + id);

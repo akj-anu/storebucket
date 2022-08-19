@@ -21,6 +21,9 @@ class _AddFormState extends State<AddForm> {
   final TextEditingController _discriController =
       TextEditingController(text: "");
   final TextEditingController _codeController = TextEditingController(text: "");
+  final TextEditingController _linkTitleController =
+      TextEditingController(text: "");
+  final TextEditingController _linkController = TextEditingController(text: "");
   CollectionReference users = FirebaseFirestore.instance.collection('data');
   CollectionReference project =
       FirebaseFirestore.instance.collection('project');
@@ -101,7 +104,9 @@ class _AddFormState extends State<AddForm> {
           })
           .then((value) => {
                 snackMsg(color: Colors.green, text: "Project Added"),
-                setState(() {})
+                setState(() {
+                  linkList = [];
+                })
               })
           .catchError((error) {
             snackMsg(color: Colors.red, text: "Failed to add project");
@@ -113,7 +118,11 @@ class _AddFormState extends State<AddForm> {
       isDoc ? addData() : addproject();
     }
 
-    _addLink() {}
+    _addLink() {
+      linkList.add(_linkController.text);
+      print(linkList);
+    }
+
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
@@ -210,7 +219,7 @@ class _AddFormState extends State<AddForm> {
                     height: 80,
                     child: TextField(
                       style: const TextStyle(color: Colors.white),
-                      controller: _discriController,
+                      controller: _linkTitleController,
                       maxLength: null,
                       maxLines: null,
                       decoration: const InputDecoration(
@@ -237,7 +246,7 @@ class _AddFormState extends State<AddForm> {
                     height: 80,
                     child: TextField(
                       style: const TextStyle(color: Colors.white),
-                      controller: _discriController,
+                      controller: _linkController,
                       maxLength: null,
                       maxLines: null,
                       decoration: const InputDecoration(

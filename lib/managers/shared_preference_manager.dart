@@ -11,10 +11,9 @@ class UserManager {
     String action = prefs.getString('userName') ?? '';
     return action;
   }
-   
-   static Future<void> removeuser()async{
-     final prefs = await SharedPreferences.getInstance();
-     prefs.remove('userName');
-   }
 
+  static Future<void> removeuser() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('userName');
+  }
 }

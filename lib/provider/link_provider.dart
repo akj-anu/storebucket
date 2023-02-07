@@ -18,7 +18,7 @@ class LinkProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool checkEmpty()  {
+  bool checkEmpty() {
     bool isEmpty = true;
     if (linkTitleController.text != "" && linkController.text != "") {
       isEmpty = false;

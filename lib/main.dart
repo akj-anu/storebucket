@@ -5,6 +5,8 @@ import 'package:storebucket/home/home.dart';
 import 'package:storebucket/home/widget/login.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
 import 'package:storebucket/provider/link_provider.dart';
+import 'package:storebucket/provider/project_data_provider.dart';
+import 'package:storebucket/responsive_ui/responsive_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +46,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => LinkProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (context) => LinkProvider()),
+        ChangeNotifierProvider(create: (context) => ProjectDataProvider()),
+      ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'storebucket',

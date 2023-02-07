@@ -3,13 +3,20 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:storebucket/common/extention.dart';
+import 'package:storebucket/common/fontstyle.dart';
 import 'package:storebucket/home/widget/add_form.dart';
 import 'package:storebucket/home/widget/details.dart';
+import 'package:storebucket/home/widget/drawer.dart';
 import 'package:storebucket/home/widget/login.dart';
 import 'package:storebucket/home/widget/models/details.dart';
+import 'package:storebucket/home/widget/search_widget.dart';
 import 'package:storebucket/home/widget/update_bottomsheet.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
 import 'package:storebucket/project/project.dart';
+import 'package:storebucket/provider/project_data_provider.dart';
+import 'package:storebucket/responsive_ui/responsive_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -46,6 +53,9 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     getUserName();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      context.read<ProjectDataProvider>().getProjectData();
+    });
     super.initState();
   }
 
@@ -56,106 +66,261 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.grey[850],
-        appBar: AppBar(
-          backgroundColor: Colors.grey[850],
-          title: Row(
-            children: const [
-              Icon(
-                Icons.cloud_upload,
-                color: Colors.blue,
-                size: 30,
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              Text(
-                "STORE BUCKET ",
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-            ],
-          ),
-          actions: [
-            //  ElevatedButton(
-            //     style: ButtonStyle(
-            //       backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
-            //     ),
-            //     onPressed: () {},
-            //     child: const Text("DASHBOARD")),
-            ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
-                ),
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(context,
-                      MaterialPageRoute(builder: (context) {
-                    return const Project();
-                  }), (route) => false);
-                  // Navigator.push(context, );
-                },
-                child: const Text("PROJECTS")),
-            ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
-                ),
-                onPressed: () {
-                  setState(() {
-                    isDataAdded = true;
-                    searchData = null;
-                    searchElement = "";
-                    searchedData = null;
-                    Home.searchDataList = null;
-                    _searchController.text = "";
-                  });
-                },
-                child: const Text("CLEAR")),
-            const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Center(
-                  child: Text(
-                "BETA v1",
-                style: TextStyle(color: Colors.white),
-              )),
-            ),
-            ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
-                ),
-                onPressed: () {
-                  UserManager.removeuser().then((value) {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const LoginScreen()));
-                  });
-                },
-                child: const Text("LOGOUT")),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        'Hi , ${Home.username}',
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
+    var size = MediaQuery.of(context).size;
+    return Selector<ProjectDataProvider, List<QueryDocumentSnapshot>>(
+        selector: (_, selector) => selector.projectList,
+        builder: (_, data, __) {
+          return ResponsiveScreen(
+              backgroundColor: Colors.grey[50],
+              tabletAppBar: AppBar(
+                backgroundColor: Colors.grey[850],
+                title: SizedBox(
+                  width: size.width,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.cloud_upload,
+                        color: Colors.blue,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      SizedBox(
+                        width: size.width * .15,
+                        child: Text(
+                          "STORE BUCKET",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                  Flexible(
-                    flex: 2,
-                    child: Align(
-                      alignment: Alignment.topRight,
+                ),
+                actions: [
+                  //  ElevatedButton(
+                  //     style: ButtonStyle(
+                  //       backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
+                  //     ),
+                  //     onPressed: () {},
+                  //     child: const Text("DASHBOARD")),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.grey[850]),
+                      ),
+                      onPressed: () {
+                        Navigator.pushAndRemoveUntil(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const Project();
+                        }), (route) => false);
+                        // Navigator.push(context, );
+                      },
+                      child: const Text("PROJECTS")),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.grey[850]),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isDataAdded = true;
+                          searchData = null;
+                          searchElement = "";
+                          searchedData = null;
+                          Home.searchDataList = null;
+                          _searchController.text = "";
+                        });
+                      },
+                      child: const Text("CLEAR")),
+                  const Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: Center(
+                        child: Text(
+                      "BETA v1",
+                      style: TextStyle(color: Colors.white),
+                    )),
+                  ),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.grey[850]),
+                      ),
+                      onPressed: () {
+                        UserManager.removeuser().then((value) {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginScreen()));
+                        });
+                      },
+                      child: const Text("LOGOUT")),
+                ],
+              ),
+              webAppBar: AppBar(
+                backgroundColor: Colors.grey[850],
+                title: SizedBox(
+                  width: size.width,
+                  child: Row(
+                    children: const [
+                      Icon(
+                        Icons.cloud_upload,
+                        color: Colors.blue,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        "STORE BUCKET ",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  //  ElevatedButton(
+                  //     style: ButtonStyle(
+                  //       backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
+                  //     ),
+                  //     onPressed: () {},
+                  //     child: const Text("DASHBOARD")),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.grey[850]),
+                      ),
+                      onPressed: () {
+                        Navigator.pushAndRemoveUntil(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const Project();
+                        }), (route) => false);
+                        // Navigator.push(context, );
+                      },
+                      child: const Text("PROJECTS")),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.grey[850]),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isDataAdded = true;
+                          searchData = null;
+                          searchElement = "";
+                          searchedData = null;
+                          Home.searchDataList = null;
+                          _searchController.text = "";
+                        });
+                      },
+                      child: const Text("CLEAR")),
+                  const Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: Center(
+                        child: Text(
+                      "BETA v1",
+                      style: TextStyle(color: Colors.white),
+                    )),
+                  ),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.grey[850]),
+                      ),
+                      onPressed: () {
+                        UserManager.removeuser().then((value) {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginScreen()));
+                        });
+                      },
+                      child: const Text("LOGOUT")),
+                ],
+              ),
+              mobileAppBar: AppBar(
+                backgroundColor: Colors.grey[850],
+                centerTitle: true,
+                title: Row(
+                  children: const [
+                    Icon(
+                      Icons.cloud_upload,
+                      color: Colors.blue,
+                      size: 30,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      "STORE BUCKET ",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
+                /*     actions: [
+                //  ElevatedButton(
+                //     style: ButtonStyle(
+                //       backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
+                //     ),
+                //     onPressed: () {},
+                //     child: const Text("DASHBOARD")),
+                ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
+                    ),
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(context,
+                          MaterialPageRoute(builder: (context) {
+                            return const Project();
+                          }), (route) => false);
+                      // Navigator.push(context, );
+                    },
+                    child: const Text("PROJECTS")),
+                ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isDataAdded = true;
+                        searchData = null;
+                        searchElement = "";
+                        searchedData = null;
+                        Home.searchDataList = null;
+                        _searchController.text = "";
+                      });
+                    },
+                    child: const Text("CLEAR")),
+                const Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: Center(
+                      child: Text(
+                        "BETA v1",
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ),
+                ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
+                    ),
+                    onPressed: () {
+                      UserManager.removeuser().then((value) {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => const LoginScreen()));
+                      });
+                    },
+                    child: const Text("LOGOUT")),
+              ],*/
+              ),
+              drawer: const CustomDrawer(),
+              mobileView: SizedBox(
+                width: size.width,
+                height: size.height,
+                child: Column(
+                  children: [
+                    Container(
+                      height: 60,
+                      color: Colors.grey[850],
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
@@ -205,359 +370,68 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    Expanded(
+                        child: CustomCardsWidget(
+                      data: data,
+                    ))
+                  ],
+                ),
               ),
-              Row(
-                children: [
-                  const Flexible(flex: 5, child: AddForm()),
-                  Flexible(
-                    flex: 20,
-                    child: searchedData == null || searchedData!.isEmpty
-                        ? Container(
-                            height: MediaQuery.of(context).size.height,
-                            width: MediaQuery.of(context).size.width,
-                            color: Colors.indigo[50],
-                            child: StreamBuilder<QuerySnapshot>(
-                              stream: _usersStream,
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                                if (snapshot.hasError) {
-                                  return const Text('Something went wrong');
-                                }
-                                if (snapshot.error != null) {
-                                  return const Text('snapshot.error');
-                                }
-                                if (snapshot.stackTrace != null) {
-                                  return const Text('Stacktrace.error');
-                                }
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return Center(
-                                    child: Lottie.network(
-                                      "https://assets10.lottiefiles.com/packages/lf20_RnSQsr.json",
-                                      width: 200,
-                                      height: 200,
-                                    ),
-                                  );
-                                }
-
-                                if (snapshot.hasData) {
-                                  log(snapshot.data!.docs.toString());
-                                  return Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                          alignment: Alignment.centerRight,
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 15,
-                                          ),
-                                          // color: Colors.red,
-                                          width: double.infinity,
-                                          height: 50,
-                                          child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Flexible(
-                                                  flex: 1,
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: const [
-                                                      Flexible(
-                                                        flex: 1,
-                                                        child: Text(
-                                                          'List of Documents',
-                                                          maxLines: 1,
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 20,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                                !isDataAdded
-                                                    ? Flexible(
-                                                        flex: 2,
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .end,
-                                                          children: [
-                                                            const Text(
-                                                              'Entered keyword is not found',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                            Lottie.network(
-                                                                "https://assets2.lottiefiles.com/packages/lf20_shvej97v.json",
-                                                                width: 50,
-                                                                height: 50),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    : const SizedBox(),
-                                              ])),
-                                      snapshot.data!.docs.isNotEmpty
-                                          ? Expanded(
-                                              child: ListView(
-                                                children: snapshot.data!.docs
-                                                    .map((DocumentSnapshot
-                                                        document) {
-                                                  Map<String, dynamic> data =
-                                                      document.data()! as Map<
-                                                          String, dynamic>;
-                                                  Home.searchDataList = snapshot
-                                                      .data!.docs
-                                                      .map((doc) => SearchData(
-                                                          title: doc['title'],
-                                                          description: doc[
-                                                              'description'],
-                                                          code: doc['code'],
-                                                          name: doc['name'],
-                                                          id: doc.id))
-                                                      .toList();
-                                                  return Container(
-                                                    //  margin: EdgeInsets.only(right:MediaQuery.of(context).size.width*0.5),
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.white70,
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: Colors
-                                                                .grey.shade300,
-                                                            blurRadius: 10.0,
-                                                          ),
-                                                        ],
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5)),
-                                                    margin: EdgeInsets.only(
-                                                        bottom: 10,
-                                                        left: 10,
-                                                        right: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.5),
-
-                                                    child: ListTile(
-                                                      title:
-                                                          Text(data['title']),
-                                                      subtitle: Text(
-                                                          data['description']),
-                                                      // trailing: Text(data['code']),
-                                                      onTap: () {
-                                                        Navigator.of(context)
-                                                            .push(
-                                                                MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              DetailsScreen(
-                                                            code: data['code'],
-                                                            title:
-                                                                data['title'],
-                                                            description: data[
-                                                                'description'],
-                                                            username:
-                                                                data['name'],
-                                                          ),
-                                                        ));
-                                                        Home.codeDetails =
-                                                            data['code'];
-                                                        Home.descriptionDetails =
-                                                            data['description'];
-                                                        Home.titleDetails =
-                                                            data['title'];
-                                                        setState(() {
-                                                          debugPrint(
-                                                              'data id ${data.keys}');
-                                                        });
-                                                      },
-                                                      trailing: Home.username ==
-                                                              data['name']
-                                                          ? Wrap(
-                                                              spacing: 12,
-                                                              children: [
-                                                                IconButton(
-                                                                    icon: const Icon(
-                                                                        Icons
-                                                                            .edit),
-                                                                    onPressed:
-                                                                        (() {
-                                                                      Navigator.push(
-                                                                          context,
-                                                                          MaterialPageRoute(
-                                                                            builder: (context) => UpdateBottomSheet(
-                                                                                title: data['title'],
-                                                                                description: data['description'],
-                                                                                code: data['code']),
-                                                                          ));
-                                                                    })),
-                                                                IconButton(
-                                                                    icon: const Icon(
-                                                                        Icons
-                                                                            .delete_outline),
-                                                                    onPressed:
-                                                                        (() {
-                                                                      deleteData(
-                                                                          title:
-                                                                              data['title']);
-                                                                    })),
-                                                              ],
-                                                            )
-                                                          : const SizedBox(),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            )
-                                          : Center(
-                                              child: Container(
-                                                margin: const EdgeInsets.only(
-                                                  top: 100,
-                                                ),
-                                                child: Lottie.network(
-                                                    "https://assets2.lottiefiles.com/packages/lf20_shvej97v.json",
-                                                    width: 250,
-                                                    height: 250),
-                                                // const Text(
-                                                //   'No search data :(',
-                                                //   style: TextStyle(fontSize: 22),
-                                                // )
-                                              ),
-                                            ),
-                                    ],
-                                  );
-                                }
-                                return Center(
-                                  child: Lottie.network(
-                                    "https://assets10.lottiefiles.com/packages/lf20_RnSQsr.json",
-                                    width: 200,
-                                    height: 200,
-                                  ),
-                                );
-                              },
-                            ))
-                        : Container(
-                            height: MediaQuery.of(context).size.height,
-                            width: MediaQuery.of(context).size.width,
-                            color: Colors.indigo[50],
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: 50,
-                                  padding: const EdgeInsets.only(
-                                      top: 14, left: 15, right: 15),
-                                  child: const Text(
-                                    'List of Documents',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20),
-                                  ),
-                                ),
-                                searchedData != null || searchedData!.isNotEmpty
-                                    ? Expanded(
-                                        child: ListView.builder(
-                                            itemCount: searchedData!.length,
-                                            itemBuilder: (context, index) {
-                                              return Container(
-                                                decoration: BoxDecoration(
-                                                    // color: Colors.grey[100],
-                                                    border: Border.all(
-                                                        color: Colors.black,
-                                                        width: 1),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                margin: EdgeInsets.only(
-                                                    bottom: 5,
-                                                    left: 10,
-                                                    right:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.5),
-                                                child: ListTile(
-                                                  title: Text(
-                                                      searchedData![index]
-                                                          .title!),
-                                                  subtitle: Text(
-                                                      searchedData![index]
-                                                          .description!),
-                                                  // trailing: Text(data['code']),
-                                                  onTap: () {
-                                                    Navigator.of(context)
-                                                        .push(MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          DetailsScreen(
-                                                        code:
-                                                            searchedData![index]
-                                                                .code!,
-                                                        title:
-                                                            searchedData![index]
-                                                                .title!,
-                                                        description:
-                                                            searchedData![index]
-                                                                .description!,
-                                                      ),
-                                                    ));
-                                                    Home.codeDetails =
-                                                        searchedData![index]
-                                                            .code!;
-                                                    Home.descriptionDetails =
-                                                        searchedData![index]
-                                                            .description!;
-                                                    Home.titleDetails =
-                                                        searchedData![index]
-                                                            .title!;
-                                                    setState(() {});
-                                                  },
-                                                  trailing: Home.username ==
-                                                          searchedData![index]
-                                                              .name
-                                                      ? IconButton(
-                                                          icon: const Icon(Icons
-                                                              .delete_outline),
-                                                          onPressed: (() {
-                                                            deleteData();
-                                                          }))
-                                                      : const SizedBox(),
-                                                ),
-                                              );
-                                            }))
-                                    : Center(
-                                        child: Lottie.network(
-                                          "https://assets10.lottiefiles.com/packages/lf20_RnSQsr.json",
-                                          width: 200,
-                                          height: 200,
-                                        ),
-                                      )
-                              ],
+              tabletView: SizedBox(
+                width: size.width,
+                height: size.height,
+                child: Column(
+                  children: [
+                    Search(),
+                    Expanded(
+                      child: SizedBox(
+                        width: size.width,
+                        child: Row(
+                          children: [
+                            Flexible(
+                              flex: 4,
+                              child: SizedBox(child: AddForm()),
                             ),
-                          ),
-                  )
-                ],
-              )
-            ],
-          ),
-        ));
+                            Flexible(
+                                flex: 6,
+                                child: CustomCardsWidget(
+                                  data: data,
+                                )),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              webView: SizedBox(
+                width: size.width,
+                height: size.height,
+                child: Column(
+                  children: [
+                    Search(),
+                    Expanded(
+                      child: SizedBox(
+                        width: size.width,
+                        child: Row(
+                          children: [
+                            const Flexible(
+                              flex: 3,
+                              child: SizedBox(child: AddForm()),
+                            ),
+                            Flexible(
+                                flex: 7,
+                                child: CustomCardsWidget(
+                                  data: data,
+                                )),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ));
+        });
   }
 
   search() {
@@ -600,28 +474,130 @@ class _HomeState extends State<Home> {
   }
 }
 
-// updateData(
-//     {String? titleNew, String? desc, String? code, String? userName}) async {
-//   String id = "";
+class CustomCardsWidget extends StatelessWidget {
+  final List<DocumentSnapshot> data;
+  const CustomCardsWidget({Key? key, required this.data}) : super(key: key);
 
-//   for (int i = 0; i < Home.searchDataList!.length; i++) {
-//     if (titleNew == Home.searchDataList![i].title) {
-//       id = Home.searchDataList![i].id!;
-//       print(id);
-//     }
-//   }
+  getCount(size) {
+    if (size <= 500 || size > 500 && size <= 700) {
+      return 1;
+    } else if (size > 700 && size <= 1024) {
+      return 2;
+    } else if (size > 1024 && size <= 1300) {
+      return 3;
+    } else if (size > 1300) {
+      return 4;
+    }
+  }
 
-//   CollectionReference data =
-//       await FirebaseFirestore.instance.collection('data');
-
-//   data
-//       .doc(id)
-//       .update({
-//         'title': titleNew ?? "1",
-//         'description': desc ?? "1",
-//         'code': code ?? "1",
-//         'name': userName ?? "1",
-//       })
-//       .then((value) => print("Data Updated"))
-//       .catchError((error) => print("Failed to update data: $error"));
-// }
+  @override
+  Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    print(size.width);
+    return SizedBox(
+      height: size.height,
+      child: Column(
+        children: [
+          Expanded(
+            child: GridView(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: getCount(size.width),
+                  mainAxisSpacing: 15,
+                  crossAxisSpacing: 15,
+                  childAspectRatio: size.width > 700
+                      ? 230 / 190
+                      : size.width > 500
+                          ? 230 / 120
+                          : 230 / 70),
+              children: data.map((DocumentSnapshot document) {
+                return Stack(
+                  children: [
+                    Card(
+                      elevation: 2,
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.blue,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      "A",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("User Name"),
+                                    Text("@hi,very cool"),
+                                  ],
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              document['title'].toString().camelCase(),
+                              maxLines: 1,
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              document['description'],
+                              maxLines: 2,
+                              style: TextStyle(
+                                  color: Colors.black87, fontSize: 13),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (Home.username == document['name'])
+                      Positioned(
+                          right: 5,
+                          top: 10,
+                          child: Center(
+                            child: PopupMenuButton(
+                                iconSize: 20,
+                                itemBuilder: (_) => <PopupMenuItem<String>>[
+                                      new PopupMenuItem<String>(
+                                          child: const Text('Edit'),
+                                          value: 'edit'),
+                                      new PopupMenuItem<String>(
+                                          child: const Text('Delete'),
+                                          value: 'delete'),
+                                    ]),
+                          ))
+                  ],
+                );
+              }).toList(),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

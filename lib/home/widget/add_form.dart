@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:storebucket/home/home.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
+import 'package:provider/provider.dart';
+import 'package:storebucket/provider/link_provider.dart';
 
-enum chooseType { doc, project }
+enum ChooseType { doc, project }
 
 class AddForm extends StatefulWidget {
   const AddForm({Key? key}) : super(key: key);
@@ -13,7 +15,8 @@ class AddForm extends StatefulWidget {
 }
 
 class _AddFormState extends State<AddForm> {
-  List<String> linkList = [];
+  final _formKey = GlobalKey<FormState>();
+
   bool isDoc = true;
   Stream<QuerySnapshot<Object?>>? searchData;
   final TextEditingController _titleController =
@@ -21,9 +24,7 @@ class _AddFormState extends State<AddForm> {
   final TextEditingController _discriController =
       TextEditingController(text: "");
   final TextEditingController _codeController = TextEditingController(text: "");
-  final TextEditingController _linkTitleController =
-      TextEditingController(text: "");
-  final TextEditingController _linkController = TextEditingController(text: "");
+
   CollectionReference users = FirebaseFirestore.instance.collection('data');
   CollectionReference project =
       FirebaseFirestore.instance.collection('project');
@@ -32,9 +33,12 @@ class _AddFormState extends State<AddForm> {
   String code = "";
 
   String userName = '';
+  bool isAddMore = false;
+
   @override
   void initState() {
     getUserName();
+
     super.initState();
   }
 
@@ -43,9 +47,11 @@ class _AddFormState extends State<AddForm> {
     debugPrint(userName);
   }
 
-  chooseType? _type = chooseType.doc;
+  ChooseType? _type = ChooseType.doc;
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final hieght = MediaQuery.of(context).size.height;
     snackMsg({Color? color, String? text}) {
       final snackBar = SnackBar(
         backgroundColor: color,
@@ -100,13 +106,10 @@ class _AddFormState extends State<AddForm> {
             'description': description,
             'code': code,
             'name': userName,
-            'links': linkList,
+            'linkmap': context.read<LinkProvider>().linkMap
           })
           .then((value) => {
                 snackMsg(color: Colors.green, text: "Project Added"),
-                setState(() {
-                  linkList = [];
-                })
               })
           .catchError((error) {
             snackMsg(color: Colors.red, text: "Failed to add project");
@@ -118,14 +121,9 @@ class _AddFormState extends State<AddForm> {
       isDoc ? addData() : addproject();
     }
 
-    _addLink() {
-      linkList.add(_linkController.text);
-      print(linkList);
-    }
-
     return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
+      height: hieght,
+      width: width,
       color: Colors.grey[800],
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -133,16 +131,16 @@ class _AddFormState extends State<AddForm> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RadioListTile<chooseType>(
+            RadioListTile<ChooseType>(
               title: const Text(
                 'Add Docs',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: TextStyle(color: Colors.white),
               ),
-              value: chooseType.doc,
+              value: ChooseType.doc,
               groupValue: _type,
-              onChanged: (chooseType? value) {
+              onChanged: (ChooseType? value) {
                 setState(() {
                   _type = value;
                   isDoc = true;
@@ -150,26 +148,23 @@ class _AddFormState extends State<AddForm> {
                 });
               },
             ),
-            RadioListTile<chooseType>(
+            RadioListTile<ChooseType>(
               title: const Text(
                 'Add Project',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: TextStyle(color: Colors.white),
               ),
-              value: chooseType.project,
+              value: ChooseType.project,
               groupValue: _type,
-              onChanged: (chooseType? value) {
+              onChanged: (ChooseType? value) {
                 setState(() {
                   _type = value;
                   isDoc = false;
                   debugPrint(_type.toString());
                 });
               },
-
-              // activeColor: Colors.white,
             ),
-
             SizedBox(
               height: 80,
               child: TextField(
@@ -188,9 +183,6 @@ class _AddFormState extends State<AddForm> {
                 },
               ),
             ),
-            //  const SizedBox(
-            //   height: 10,
-            // ),
             SizedBox(
               height: 80,
               child: TextField(
@@ -211,63 +203,6 @@ class _AddFormState extends State<AddForm> {
                 },
               ),
             ),
-            const SizedBox(
-              height: 5,
-            ),
-            !isDoc
-                ? SizedBox(
-                    height: 80,
-                    child: TextField(
-                      style: const TextStyle(color: Colors.white),
-                      controller: _linkTitleController,
-                      maxLength: null,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                          hintText: 'Link Title',
-                          focusColor: Colors.white,
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          hintStyle: TextStyle(color: Colors.white)),
-                      onChanged: (text) {
-                        description = text;
-                      },
-                    ),
-                  )
-                : const SizedBox(),
-            !isDoc
-                ? const SizedBox(
-                    height: 5,
-                  )
-                : const SizedBox(),
-            !isDoc
-                ? SizedBox(
-                    height: 80,
-                    child: TextField(
-                      style: const TextStyle(color: Colors.white),
-                      controller: _linkController,
-                      maxLength: null,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                          hintText: 'Link',
-                          focusColor: Colors.white,
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          hintStyle: TextStyle(color: Colors.white)),
-                      onChanged: (text) {
-                        description = text;
-                      },
-                    ),
-                  )
-                : const SizedBox(),
-            !isDoc
-                ? const SizedBox(
-                    height: 5,
-                  )
-                : const SizedBox(),
             isDoc
                 ? Container(
                     height: 180,
@@ -293,16 +228,273 @@ class _AddFormState extends State<AddForm> {
                   )
                 : const SizedBox(),
             !isDoc
-                ? SizedBox(
-                    width: 200,
-                    height: 40,
-                    child: ElevatedButton(
-                        onPressed: _addLink, child: const Text("ADD LINK")),
+                ? Padding(
+                    padding: const EdgeInsets.only(bottom: 30),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.attachment,
+                          color: Colors.blue,
+                        ),
+                        TextButton(
+                            onPressed: () async {
+                              showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (context) => Consumer<LinkProvider>(
+                                    builder: (_, value, __) {
+                                  return Form(
+                                    key: _formKey,
+                                    child: Dialog(
+                                      // insetPadding: EdgeInsets.symmetric(
+                                      //     horizontal: double.maxFinite),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                const Text('Add Project Links'),
+                                                InkWell(
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Container(
+                                                      margin: EdgeInsets.zero,
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(),
+                                                          shape:
+                                                              BoxShape.circle),
+                                                      child: const Icon(
+                                                          Icons.close,
+                                                          size: 15)),
+                                                )
+                                              ],
+                                            ),
+                                            const SizedBox(height: 20),
+                                            Row(
+                                              children: [
+                                                Flexible(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 80,
+                                                        width: 600,
+                                                        child: TextField(
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                          controller: value
+                                                              .linkTitleController,
+                                                          maxLength: null,
+                                                          maxLines: null,
+                                                          decoration: const InputDecoration(
+                                                              hintText:
+                                                                  'Link Title',
+                                                              focusColor:
+                                                                  Colors.black,
+                                                              enabledBorder: OutlineInputBorder(
+                                                                  borderSide: BorderSide(
+                                                                      color: Colors
+                                                                          .black)),
+                                                              focusedBorder: OutlineInputBorder(
+                                                                  borderSide: BorderSide(
+                                                                      color: Colors
+                                                                          .black)),
+                                                              hintStyle: TextStyle(
+                                                                  color: Colors
+                                                                      .black)),
+                                                          // onChanged: (text) {
+                                                          //   description = text;
+                                                          // },
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 80,
+                                                        width: 600,
+                                                        child: TextFormField(
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                          controller: value
+                                                              .linkController,
+                                                          maxLength: null,
+                                                          maxLines: null,
+                                                          decoration: const InputDecoration(
+                                                              hintText: 'Link',
+                                                              focusColor:
+                                                                  Colors.black,
+                                                              enabledBorder: OutlineInputBorder(
+                                                                  borderSide: BorderSide(
+                                                                      color: Colors
+                                                                          .black)),
+                                                              focusedBorder: OutlineInputBorder(
+                                                                  borderSide: BorderSide(
+                                                                      color: Colors
+                                                                          .black)),
+                                                              hintStyle: TextStyle(
+                                                                  color: Colors
+                                                                      .black)),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        value.errorMessage,
+                                                        style: const TextStyle(
+                                                            color: Colors.red),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 30),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    const Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 20),
+                                                      child:
+                                                          Text('Added Links'),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 200,
+                                                      width: 300,
+                                                      child: ListView.builder(
+                                                        shrinkWrap: true,
+                                                        itemCount: value
+                                                            .linkMap.length,
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                int index) {
+                                                          return Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    bottom: 5),
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(10),
+                                                            decoration: BoxDecoration(
+                                                                color: Colors
+                                                                    .indigo[50],
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5)),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(value
+                                                                    .linkMap[
+                                                                        index]
+                                                                    .toString()
+                                                                    .replaceAll(
+                                                                        RegExp(
+                                                                            '[{-}]'),
+                                                                        '')),
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    value.removeLink(
+                                                                        index);
+                                                                  },
+                                                                  child: Container(
+                                                                      margin: EdgeInsets
+                                                                          .zero,
+                                                                      decoration: BoxDecoration(
+                                                                          border: Border
+                                                                              .all(),
+                                                                          shape: BoxShape
+                                                                              .circle),
+                                                                      child: const Icon(
+                                                                          Icons
+                                                                              .close,
+                                                                          size:
+                                                                              15)),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                ElevatedButton(
+                                                    onPressed: () {
+                                                      bool check =
+                                                          value.checkEmpty();
+                                                      debugPrint(
+                                                          "the test field is  $check");
+                                                      if (value.linkController
+                                                              .text
+                                                              .contains(
+                                                                  'https://') ||
+                                                          value.linkController
+                                                              .text
+                                                              .contains(
+                                                                  'http://')) {
+                                                        if (!check) {
+                                                          value.addLink();
+                                                        }
+                                                      } else {
+                                                        value.errorMessage =
+                                                            'Please Enter Valid URL';
+                                                      }
+                                                    },
+                                                    child:
+                                                        const Text("Add Link")),
+                                                ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text(
+                                                        "Save and submit")),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              );
+                            },
+                            child: const Text(
+                              'Add your project links here',
+                              style: TextStyle(color: Colors.white),
+                            )),
+                      ],
+                    ),
                   )
-                : const SizedBox(),
-            const SizedBox(
-              height: 30,
-            ),
+                : const SizedBox(
+                    height: 30,
+                  ),
             SizedBox(
               width: double.infinity,
               height: 40,

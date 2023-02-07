@@ -150,30 +150,31 @@ class _ProjectState extends State<Project> {
                   }
                   if (snapshot.hasData) {
                     return snapshot.data!.docs.isNotEmpty
-                        ? Container(
-                          height: height,
-                          width: width,
-                          child: AlignedGridView.count(
-                            padding: EdgeInsets.only(
-                                left: height * 0.1,
-                                right: width * 0.1,
-                                top: height * 0.2,
-                                bottom: height * 0.1),
-                            crossAxisCount: 4,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-                            itemCount: snapshot.data!.docs.length,
-                            itemBuilder: (context, index) {
-                              var project = snapshot.data!.docs[index];
-                              return projectTile(context,
-                                  projectTitle: project['title']!,
-                                  description: project['description'],
-                                  uiLinks: project['code'],
-                                  name: project['name'],
-                                  id: snapshot.data!.docs[index].id);
-                            },
-                          ),
-                        )
+                        ? SizedBox(
+                            height: height,
+                            width: width,
+                            child: AlignedGridView.count(
+                              padding: EdgeInsets.only(
+                                  left: height * 0.1,
+                                  right: width * 0.1,
+                                  top: height * 0.2,
+                                  bottom: height * 0.1),
+                              crossAxisCount: 4,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (context, index) {
+                                var project = snapshot.data!.docs[index];
+                                return projectTile(context,
+                                    projectTitle: project['title']!,
+                                    description: project['description'],
+                                    uiLinks: project['code'],
+                                    name: project['name'],
+                                    linkmap: project['linkmap'],
+                                    id: snapshot.data!.docs[index].id);
+                              },
+                            ),
+                          )
                         : Padding(
                             padding: EdgeInsets.only(
                                 left: height * 0.1,
@@ -203,7 +204,8 @@ class _ProjectState extends State<Project> {
       String? description,
       String? uiLinks,
       String? id,
-      String? name}) {
+      String? name,
+      List<dynamic>? linkmap}) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return InkWell(
@@ -213,6 +215,7 @@ class _ProjectState extends State<Project> {
             title: projectTitle,
             description: description,
             code: uiLinks,
+            linkmap: linkmap,
           );
         }));
       }),

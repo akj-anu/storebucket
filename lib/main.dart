@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:storebucket/home/home.dart';
 import 'package:storebucket/home/widget/login.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
-import 'package:storebucket/project/project.dart';
+import 'package:storebucket/provider/link_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,22 +43,25 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'storebucket',
-        home: FutureBuilder(
-            future: _init,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const Center(child: Text("ERROR"));
-              }
-              if (snapshot.connectionState == ConnectionState.done) {
-                return username == '' ? const LoginScreen() : const Home();
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
+    return MultiProvider(
+      providers: [ChangeNotifierProvider(create: (context) => LinkProvider())],
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'storebucket',
+          home: FutureBuilder(
+              future: _init,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(child: Text("ERROR"));
+                }
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return username == '' ? const LoginScreen() : const Home();
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
                 return const Center(child: CircularProgressIndicator());
-              }
-              return const Center(child: CircularProgressIndicator());
-            }));
+              })),
+    );
   }
 }

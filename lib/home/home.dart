@@ -7,6 +7,7 @@ import 'package:storebucket/home/widget/add_form.dart';
 import 'package:storebucket/home/widget/details.dart';
 import 'package:storebucket/home/widget/login.dart';
 import 'package:storebucket/home/widget/models/details.dart';
+import 'package:storebucket/home/widget/update_bottomsheet.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
 import 'package:storebucket/project/project.dart';
 
@@ -221,7 +222,6 @@ class _HomeState extends State<Home> {
                               stream: _usersStream,
                               builder: (BuildContext context,
                                   AsyncSnapshot<QuerySnapshot> snapshot) {
-                                    
                                 if (snapshot.hasError) {
                                   return const Text('Something went wrong');
                                 }
@@ -335,15 +335,19 @@ class _HomeState extends State<Home> {
                                                   return Container(
                                                     //  margin: EdgeInsets.only(right:MediaQuery.of(context).size.width*0.5),
                                                     decoration: BoxDecoration(
-                                                        // color: Colors.grey[100],
-                                                        border: Border.all(
-                                                            color: Colors.black,
-                                                            width: 1),
+                                                        color: Colors.white70,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors
+                                                                .grey.shade300,
+                                                            blurRadius: 10.0,
+                                                          ),
+                                                        ],
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(5)),
                                                     margin: EdgeInsets.only(
-                                                        bottom: 5,
+                                                        bottom: 10,
                                                         left: 10,
                                                         right: MediaQuery.of(
                                                                     context)
@@ -368,6 +372,8 @@ class _HomeState extends State<Home> {
                                                                 data['title'],
                                                             description: data[
                                                                 'description'],
+                                                            username:
+                                                                data['name'],
                                                           ),
                                                         ));
                                                         Home.codeDetails =
@@ -383,14 +389,36 @@ class _HomeState extends State<Home> {
                                                       },
                                                       trailing: Home.username ==
                                                               data['name']
-                                                          ? IconButton(
-                                                              icon: const Icon(Icons
-                                                                  .delete_outline),
-                                                              onPressed: (() {
-                                                                deleteData(
-                                                                    title: data[
-                                                                        'title']);
-                                                              }))
+                                                          ? Wrap(
+                                                              spacing: 12,
+                                                              children: [
+                                                                IconButton(
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .edit),
+                                                                    onPressed:
+                                                                        (() {
+                                                                      Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                            builder: (context) => UpdateBottomSheet(
+                                                                                title: data['title'],
+                                                                                description: data['description'],
+                                                                                code: data['code']),
+                                                                          ));
+                                                                    })),
+                                                                IconButton(
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .delete_outline),
+                                                                    onPressed:
+                                                                        (() {
+                                                                      deleteData(
+                                                                          title:
+                                                                              data['title']);
+                                                                    })),
+                                                              ],
+                                                            )
                                                           : const SizedBox(),
                                                     ),
                                                   );
@@ -571,3 +599,29 @@ class _HomeState extends State<Home> {
         .catchError((error) => log("Failed to delete user: $error"));
   }
 }
+
+// updateData(
+//     {String? titleNew, String? desc, String? code, String? userName}) async {
+//   String id = "";
+
+//   for (int i = 0; i < Home.searchDataList!.length; i++) {
+//     if (titleNew == Home.searchDataList![i].title) {
+//       id = Home.searchDataList![i].id!;
+//       print(id);
+//     }
+//   }
+
+//   CollectionReference data =
+//       await FirebaseFirestore.instance.collection('data');
+
+//   data
+//       .doc(id)
+//       .update({
+//         'title': titleNew ?? "1",
+//         'description': desc ?? "1",
+//         'code': code ?? "1",
+//         'name': userName ?? "1",
+//       })
+//       .then((value) => print("Data Updated"))
+//       .catchError((error) => print("Failed to update data: $error"));
+// }

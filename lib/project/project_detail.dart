@@ -18,6 +18,13 @@ class ProjectDetailsScreen extends StatefulWidget {
 
   List<dynamic>? linkmap = [];
 
+  final List<Color> colors = <Color>[
+    Colors.indigo.shade50,
+    Colors.blue.shade50,
+    Colors.red.shade50,
+    Colors.amber.shade50
+  ];
+
   @override
   State<ProjectDetailsScreen> createState() => _ProjectDetailsScreenState();
 }
@@ -125,8 +132,9 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                   padding: const EdgeInsets.all(10),
                   shrinkWrap: true,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
+                    mainAxisExtent: 100,
+                    mainAxisSpacing: 20,
+                    crossAxisSpacing: 20,
                     crossAxisCount: 10,
                   ),
                   itemCount: widget.linkmap?.length ?? 0,
@@ -139,7 +147,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            color: Colors.indigo[50]),
+                            color: widget.colors[index % widget.colors.length]),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

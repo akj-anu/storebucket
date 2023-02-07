@@ -400,17 +400,22 @@ class _AddFormState extends State<AddForm> {
                                                                 MainAxisAlignment
                                                                     .spaceBetween,
                                                             children: [
-                                                              Text(
-                                                                value.linkMap[
-                                                                        index]
-                                                                    .toString()
-                                                                    .replaceAll(
-                                                                        RegExp(
-                                                                            '[{-}]'),
-                                                                        ''),
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
+                                                              Expanded(
+                                                                child: SizedBox(
+                                                                  width: 250,
+                                                                  child: Text(
+                                                                    value
+                                                                        .linkMap[
+                                                                            index]
+                                                                        .toString()
+                                                                        .replaceAll(
+                                                                            RegExp('[{-}]'),
+                                                                            ''),
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .clip,
+                                                                  ),
+                                                                ),
                                                               ),
                                                               InkWell(
                                                                 onTap: () {
@@ -418,9 +423,8 @@ class _AddFormState extends State<AddForm> {
                                                                       index);
                                                                 },
                                                                 child: Container(
-                                                                    margin:
-                                                                        EdgeInsets
-                                                                            .zero,
+                                                                    margin: const EdgeInsets
+                                                                        .all(5),
                                                                     decoration: BoxDecoration(
                                                                         border: Border
                                                                             .all(),

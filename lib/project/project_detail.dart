@@ -24,8 +24,9 @@ class ProjectDetailsScreen extends StatefulWidget {
 
 class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
   List<String> linkList = [];
+  List<String> linkNameList = [];
 
-  getLinkOnly() async {
+  getLink() async {
     for (var element in widget.linkmap ?? {}) {
       element.forEach((key, value) {
         linkList.add(value);
@@ -33,9 +34,18 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
     }
   }
 
+  getLinkName() async {
+    for (var element in widget.linkmap ?? {}) {
+      element.forEach((key, value) {
+        linkNameList.add(key);
+      });
+    }
+  }
+
   @override
   void initState() {
-    getLinkOnly();
+    getLinkName();
+    getLink();
     super.initState();
   }
 
@@ -106,29 +116,43 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 25),
               ),
+              const SizedBox(
+                height: 40,
+              ),
               SizedBox(
-                width: 400,
-                child: ListView.builder(
+                width: double.maxFinite,
+                child: GridView.builder(
                   padding: const EdgeInsets.all(10),
                   shrinkWrap: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    crossAxisCount: 10,
+                  ),
                   itemCount: widget.linkmap?.length ?? 0,
                   itemBuilder: (BuildContext context, int index) {
-                    return Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            widget.linkmap![index]
-                                .toString()
-                                .replaceAll(RegExp('[{-}]'), ''),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                    return GestureDetector(
+                      onTap: () {
+                        _launchUrl(index);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.indigo[50]),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              linkNameList[index].toString(),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 5,
+                              style: const TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
-                        TextButton(
-                            onPressed: () {
-                              _launchUrl(index);
-                            },
-                            child: const Text('Click here'))
-                      ],
+                      ),
                     );
                   },
                 ),

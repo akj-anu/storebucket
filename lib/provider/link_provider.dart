@@ -12,13 +12,14 @@ class LinkProvider extends ChangeNotifier {
   addLink() async {
     linkMap.add(
         {linkTitleController.text.toString(): linkController.text.toString()});
-
+    errorMessage = '';
     linkController.clear();
     linkTitleController.clear();
+
     notifyListeners();
   }
 
-  bool checkEmpty()  {
+  bool checkEmpty() {
     bool isEmpty = true;
     if (linkTitleController.text != "" && linkController.text != "") {
       isEmpty = false;

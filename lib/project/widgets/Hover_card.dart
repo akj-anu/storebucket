@@ -49,7 +49,7 @@ class _HoverCardState extends State<HoverCard> {
           decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                    color: Colors.grey.shade400,
+                    color: Colors.grey.shade200,
                     spreadRadius: 1,
                     blurRadius: 15)
               ],

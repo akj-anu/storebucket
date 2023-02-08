@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_link_previewer/flutter_link_previewer.dart';
+import 'package:storebucket/project/widgets/Hover_card.dart';
 // import 'package:html/parser.dart' as htmlparser;
 // import 'package:html/dom.dart' as dom;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' show PreviewData;
 
 // ignore: must_be_immutable
 class ProjectDetailsScreen extends StatefulWidget {
@@ -18,13 +21,6 @@ class ProjectDetailsScreen extends StatefulWidget {
 
   List<dynamic>? linkmap = [];
 
-  final List<Color> colors = <Color>[
-    Colors.indigo.shade50,
-    Colors.blue.shade50,
-    Colors.red.shade50,
-    Colors.amber.shade50
-  ];
-
   @override
   State<ProjectDetailsScreen> createState() => _ProjectDetailsScreenState();
 }
@@ -32,6 +28,7 @@ class ProjectDetailsScreen extends StatefulWidget {
 class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
   List<String> linkList = [];
   List<String> linkNameList = [];
+  Map<String, PreviewData> datas = {};
 
   getLink() async {
     for (var element in widget.linkmap ?? {}) {
@@ -39,6 +36,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
         linkList.add(value);
       });
     }
+    print(linkList);
   }
 
   getLinkName() async {
@@ -91,21 +89,22 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
 //       <h3>This is HTML page that we want to integrate with Flutter.</h3>
 //       """;
     return Scaffold(
+      backgroundColor: Colors.indigo[50],
       appBar: AppBar(
           title: Text(widget.title ?? ''),
           backgroundColor: Colors.grey[850],
           automaticallyImplyLeading: true),
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.all(25.0),
+          padding: const EdgeInsets.all(30),
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'DESCRIPTION :',
+                'Description',
                 textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 25),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 15,
@@ -113,53 +112,44 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
               SelectableText(
                 widget.description ?? '',
                 textAlign: TextAlign.left,
-                style: const TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 17, color: Colors.black54),
               ),
-              const SizedBox(
-                height: 40,
-              ),
+              const SizedBox(height: 40),
               const Text(
-                'LINKS:',
+                'Links',
                 textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 25),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(
-                height: 40,
-              ),
+              const SizedBox(height: 30),
               SizedBox(
-                width: double.maxFinite,
+                width: double.infinity,
                 child: GridView.builder(
                   padding: const EdgeInsets.all(10),
                   shrinkWrap: true,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisExtent: 100,
+                    mainAxisExtent: 150,
                     mainAxisSpacing: 20,
                     crossAxisSpacing: 20,
-                    crossAxisCount: 10,
+                    crossAxisCount: 6,
                   ),
                   itemCount: widget.linkmap?.length ?? 0,
                   itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
+                    return HoverCard(
+                      onTaped: () {
                         _launchUrl(index);
                       },
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: widget.colors[index % widget.colors.length]),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              linkNameList[index].toString(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.attachment),
+                          SizedBox(height: 10),
+                          Text(linkNameList[index].toString().toUpperCase(),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 5,
                               style: const TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
+                                  fontSize: 17, fontWeight: FontWeight.bold)),
+                        ],
                       ),
                     );
                   },

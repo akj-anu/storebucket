@@ -111,7 +111,9 @@ class _AddFormState extends State<AddForm> {
               })
               .then((value) => {
                     snackMsg(color: Colors.green, text: "Project Added"),
-                    context.read<LinkProvider>().linkMap.clear()
+                    context.read<LinkProvider>().linkMap.clear(),
+                    _titleController.clear(),
+                    _discriController.clear()
                   })
               .catchError((error) {
                 snackMsg(color: Colors.red, text: "Failed to add project");
@@ -501,10 +503,19 @@ class _AddFormState extends State<AddForm> {
                     height: 30,
                   ),
             SizedBox(
-              width: double.infinity,
-              height: 40,
-              child: ElevatedButton(onPressed: _add, child: Text("ADD ")),
-            ),
+                width: double.infinity,
+                height: 40,
+                child: isDoc
+                    ? ElevatedButton(
+                        onPressed: () {
+                          addData();
+                        },
+                        child: const Text('ADD DOCUMENT'))
+                    : ElevatedButton(
+                        onPressed: () {
+                          addproject();
+                        },
+                        child: const Text('ADD PROJECT'))),
           ],
         ),
       ),

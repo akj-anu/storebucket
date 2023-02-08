@@ -270,14 +270,19 @@ class _ProjectState extends State<Project> {
                 ),
               ),
               Home.username == name
-                  ? IconButton(
-                      onPressed: () {
-                        _deleteProject(id);
-                      },
-                      icon: const Icon(
-                        Icons.close_rounded,
-                        color: Colors.red,
-                      ))
+                  ? Positioned(
+                      top: 0,
+                      right: 0,
+                      child: IconButton(
+                          onPressed: () {
+                            _deleteProject(id);
+                          },
+                          icon: Icon(
+                            Icons.delete,
+                            size: 18,
+                            color: Colors.red.withOpacity(0.9),
+                          )),
+                    )
                   : const SizedBox(),
             ],
           )),

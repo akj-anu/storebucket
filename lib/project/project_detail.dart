@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_link_previewer/flutter_link_previewer.dart';
+
 import 'package:storebucket/project/widgets/Hover_card.dart';
 // import 'package:html/parser.dart' as htmlparser;
 // import 'package:html/dom.dart' as dom;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' show PreviewData;
+
 
 // ignore: must_be_immutable
 class ProjectDetailsScreen extends StatefulWidget {
@@ -28,7 +28,7 @@ class ProjectDetailsScreen extends StatefulWidget {
 class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
   List<String> linkList = [];
   List<String> linkNameList = [];
-  Map<String, PreviewData> datas = {};
+
 
   getLink() async {
     for (var element in widget.linkmap ?? {}) {

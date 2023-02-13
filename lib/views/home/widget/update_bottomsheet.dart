@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:storebucket/common/fontstyle.dart';
-import 'package:storebucket/home/home.dart';
+import 'package:storebucket/views/home/home.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
 
 class UpdateBottomSheet extends StatefulWidget {

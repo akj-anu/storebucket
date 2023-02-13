@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:storebucket/project/widgets/Hover_card.dart';
+import 'package:storebucket/views/project/widgets/Hover_card.dart';
 // import 'package:html/parser.dart' as htmlparser;
 // import 'package:html/dom.dart' as dom;
 import 'package:url_launcher/url_launcher.dart';
-
 
 // ignore: must_be_immutable
 class ProjectDetailsScreen extends StatefulWidget {
@@ -28,7 +27,6 @@ class ProjectDetailsScreen extends StatefulWidget {
 class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
   List<String> linkList = [];
   List<String> linkNameList = [];
-
 
   getLink() async {
     for (var element in widget.linkmap ?? {}) {
@@ -142,8 +140,8 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.attachment),
-                          SizedBox(height: 10),
+                          const Icon(Icons.attachment),
+                          const SizedBox(height: 10),
                           Text(linkNameList[index].toString().toUpperCase(),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 5,

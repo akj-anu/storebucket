@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lottie/lottie.dart';
-import 'package:storebucket/home/home.dart';
-import 'package:storebucket/home/widget/login.dart';
+import 'package:storebucket/views/home/home.dart';
+import 'package:storebucket/views/home/widget/login.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
-import 'package:storebucket/project/project_detail.dart';
+import 'package:storebucket/views/project/project_detail.dart';
 
 class Project extends StatefulWidget {
   const Project({Key? key}) : super(key: key);

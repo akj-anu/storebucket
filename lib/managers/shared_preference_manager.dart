@@ -6,9 +6,20 @@ class UserManager {
     await prefs.setString('userName', username);
   }
 
+  static setEmail(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', email);
+  }
+
   static Future<String> getUser() async {
     final prefs = await SharedPreferences.getInstance();
-    String action = prefs.getString('userName') ?? '';
+    String action = prefs.getString('userName') ?? 'UnknownUser';
+    return action;
+  }
+
+  static Future<String> getEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    String action = prefs.getString('email') ?? '';
     return action;
   }
 

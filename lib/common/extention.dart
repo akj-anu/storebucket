@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 extension CamelCaseStringExtension on String {
   String camelCase() {
     var result = this[0].toUpperCase();
@@ -9,5 +11,16 @@ extension CamelCaseStringExtension on String {
       }
     }
     return result;
+  }
+}
+
+extension TextExtension on Text {
+  Text avoidOverFlow({int maxLine = 1}) {
+    return Text(
+      (data ?? '').trim().replaceAll('', '\u200B'),
+      style: style,
+      maxLines: maxLine,
+      overflow: TextOverflow.ellipsis,
+    );
   }
 }

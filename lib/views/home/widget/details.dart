@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_syntax_view/flutter_syntax_view.dart';
 import 'package:storebucket/common/ReuseableW_widget.dart';
 import 'package:storebucket/common/fontstyle.dart';
-import 'package:storebucket/home/home.dart';
-import 'package:storebucket/home/widget/update_bottomsheet.dart';
+import 'package:storebucket/views/home/home.dart';
+import 'package:storebucket/views/home/widget/update_bottomsheet.dart';
 
 // ignore: must_be_immutable
 class DetailsScreen extends StatelessWidget {

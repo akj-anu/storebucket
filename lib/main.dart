@@ -1,12 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storebucket/home/home.dart';
-import 'package:storebucket/home/widget/login.dart';
+import 'package:storebucket/views/home/home.dart';
+import 'package:storebucket/views/home/widget/login.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
 import 'package:storebucket/provider/link_provider.dart';
 import 'package:storebucket/provider/project_data_provider.dart';
-import 'package:storebucket/responsive_ui/responsive_screen.dart';
+import 'package:storebucket/views/add_project/add_project_or_doc_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +39,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   getUserName() async {
-    username = await UserManager.getUser();
+    var u = await UserManager.getUser();
+    username=u=="UnknownUser"?'':u;
     debugPrint(username);
   }
 
@@ -53,6 +54,9 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'storebucket',
+          theme: ThemeData(
+            fontFamily: "Montserrat"
+          ),
           home: FutureBuilder(
               future: _init,
               builder: (context, snapshot) {
@@ -60,7 +64,8 @@ class _MyAppState extends State<MyApp> {
                   return const Center(child: Text("ERROR"));
                 }
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return username == '' ? const LoginScreen() : const Home();
+              //    return username == '' ? const LoginScreen() : const Home();
+                  return username == '' ? const LoginScreen() : const AddProjectOrDocScreen();
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());

@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:storebucket/common/fontstyle.dart';
-import 'package:storebucket/home/home.dart';
+import 'package:storebucket/views/home/home.dart';
+import 'package:storebucket/views/home/widget/add_form.dart';
+import 'package:storebucket/provider/project_data_provider.dart';
+import 'package:storebucket/views/add_project/add_project_or_doc_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key? key}) : super(key: key);
@@ -31,7 +35,7 @@ class CustomDrawer extends StatelessWidget {
                       child: Center(
                         child: Text(
                           Home.username[0],
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 22, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -78,17 +82,28 @@ class CustomDrawer extends StatelessWidget {
               height: 5,
             ),
             CustomListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+                context.read<ProjectDataProvider>().getProjectData();
+              },
               title: "Projects",
               icon: CupertinoIcons.doc_text_search,
             ),
             CustomListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+                context.read<ProjectDataProvider>().setType(ChooseType.project);
+                Navigator.push(context, MaterialPageRoute(builder: (_)=>const AddProjectOrDocScreen()));
+              },
               title: "Add Projects",
               icon: CupertinoIcons.plus_rectangle_on_rectangle,
             ),
             CustomListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+                context.read<ProjectDataProvider>().setType(ChooseType.doc);
+                Navigator.push(context, MaterialPageRoute(builder: (_)=>const AddProjectOrDocScreen()));
+              },
               title: "Add Docs",
               icon: CupertinoIcons.add_circled,
             ),
@@ -158,7 +173,7 @@ class CustomListTile extends StatelessWidget {
         style: TextStyle(
             fontSize: 14, fontWeight: FontWeight.w500, color: iconColor),
       ),
-      onTap: () => onTap,
+      onTap: () => onTap(),
       focusColor: iconColor,
       trailing: Icon(
         Icons.arrow_forward_ios_rounded,

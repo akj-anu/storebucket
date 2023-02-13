@@ -75,6 +75,7 @@ class _ResponsiveScreenState extends State<ResponsiveScreen> {
       case View.tablet:
         return widget.tabletAppBar;
       case View.web:
+        print("Desk Top View");
         return widget.webAppBar;
     }
   }

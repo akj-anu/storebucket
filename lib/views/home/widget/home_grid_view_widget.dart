@@ -8,6 +8,7 @@ import 'package:storebucket/views/home/home.dart';
 import 'package:storebucket/views/home/widget/details.dart';
 import 'package:storebucket/provider/project_data_provider.dart';
 import 'package:storebucket/utils/colors.dart';
+import 'package:storebucket/views/widgets/common_success_failure_dailog.dart';
 import 'package:storebucket/views/widgets/no_data_found.dart';
 import 'package:tuple/tuple.dart';
 
@@ -207,47 +208,79 @@ class HomeGridView extends StatelessWidget {
                                                 child: Center(
                                                   child: PopupMenuButton(
                                                       iconSize: 20,
-                                                      itemBuilder: (_) => <
-                                                              PopupMenuItem<
-                                                                  String>>[
-                                                            PopupMenuItem<
-                                                                    String>(
-                                                                child: Row(
-                                                                  children: const [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .edit,
-                                                                      color: Colors
-                                                                          .blue,
+                                                      itemBuilder:
+                                                          (_) => <
+                                                                  PopupMenuItem<
+                                                                      String>>[
+                                                                PopupMenuItem<
+                                                                        String>(
+                                                                    child: Row(
+                                                                      children: const [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .edit,
+                                                                          color:
+                                                                              Colors.blue,
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              7,
+                                                                        ),
+                                                                        Text(
+                                                                            'Edit'),
+                                                                      ],
                                                                     ),
-                                                                    SizedBox(
-                                                                      width: 7,
+                                                                    onTap:
+                                                                        () {},
+                                                                    value:
+                                                                        'edit'),
+                                                                PopupMenuItem<
+                                                                        String>(
+                                                                    child: Row(
+                                                                      children: const [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .delete,
+                                                                          color:
+                                                                              Colors.red,
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              7,
+                                                                        ),
+                                                                        Text(
+                                                                            'Delete'),
+                                                                      ],
                                                                     ),
-                                                                    Text(
-                                                                        'Edit'),
-                                                                  ],
-                                                                ),
-                                                                value: 'edit'),
-                                                            PopupMenuItem<
-                                                                    String>(
-                                                                child: Row(
-                                                                  children: const [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .delete,
-                                                                      color: Colors
-                                                                          .red,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: 7,
-                                                                    ),
-                                                                    Text(
-                                                                        'Delete'),
-                                                                  ],
-                                                                ),
-                                                                value:
-                                                                    'delete'),
-                                                          ]),
+                                                                    onTap: () {
+                                                                      context
+                                                                          .read<
+                                                                              ProjectDataProvider>()
+                                                                          .delete(
+                                                                              i,
+                                                                              dataList[i].id)
+                                                                          .then((value) {
+                                                                            print("Value $value");
+                                                                        if (value) {
+                                                                          CommonAlertDialog.showDialogPopUp(
+                                                                              context,
+                                                                              title: "Success",
+                                                                              lottieImage: Assets.lottieFilesSuccess,
+                                                                              subTitle: "Document deleted",
+                                                                              titleColor: Colors.green);
+                                                                        } else {
+                                                                          CommonAlertDialog.showDialogPopUp(
+                                                                              context,
+                                                                              title: "Failed",
+                                                                              lottieImage: Assets.lottieFilesFail,
+                                                                              subTitle: "Failed to delete!.Try again",
+                                                                              titleColor: Colors.red);
+                                                                        }
+                                                                      });
+                                                                    },
+                                                                    value:
+                                                                        'delete'),
+                                                              ]),
                                                 ))
                                         ],
                                       );

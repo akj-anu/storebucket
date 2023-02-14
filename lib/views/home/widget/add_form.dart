@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:storebucket/common/statges.dart';
+import 'package:storebucket/generated/assets.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:storebucket/provider/link_provider.dart';
@@ -9,6 +11,7 @@ import 'package:storebucket/views/add_project/widgets/add_projects_links_dialog.
 import 'package:storebucket/views/add_project/widgets/links_list_widget.dart';
 import 'package:storebucket/views/add_project/widgets/select_preview_images_widget.dart';
 import 'package:storebucket/views/home/home.dart';
+import 'package:storebucket/views/widgets/common_success_failure_dailog.dart';
 
 enum ChooseType { doc, project }
 
@@ -79,59 +82,13 @@ class _AddFormState extends State<AddForm> {
     }
   }
 
-  addproject() {
-    project
-        .add({
-          'title': title,
-          'description': description,
-          'code': code,
-          'name': userName,
-          'linkmap': context.read<LinkProvider>().linkMap
-        })
-        .then((value) => {
-              snackMsg(color: Colors.green, text: "Project Added"),
-            })
-        .catchError((error) {
-          snackMsg(color: Colors.red, text: "Failed to add project");
-          debugPrint("Failed to add project: $error");
-        });
-  }
-
-  _add() {
-    isDoc ? addData() : addproject();
-  }
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final hieght = MediaQuery.of(context).size.height;
 
-/*    if (!isTitleAlreadyExist) {
-      title != "" && description != "" && code != ""
-          ? users.add({
-              'title': title,
-              'description': description,
-              'code': code,
-              'name': userName,
-            }).then((value) {
-              snackMsg(color: Colors.green);
-              debugPrint("Data Added");
-            }).then((value) {
-              _titleController.text = "";
-              _discriController.text = "";
-              _codeController.text = "";
-              title = "";
-              description = "";
-              code = "";
-            //  setState(() {});
-            }).catchError((error) {
-              snackMsg(color: Colors.red, text: "Failed to add data");
-              debugPrint("Failed to add user: $error");
-            })
-          : snackMsg(color: Colors.red, text: "Please Fill All Fields");
-    }*/
-
-    return Consumer2<ProjectDataProvider,LinkProvider>(builder: (_, value,linksProvider, __) {
+    return Consumer2<ProjectDataProvider, LinkProvider>(
+        builder: (_, value, linksProvider, __) {
       bool isProject = value.type == ChooseType.project ? true : false;
       return Container(
         height: hieght,
@@ -293,7 +250,10 @@ class _AddFormState extends State<AddForm> {
                                 maxLines: null,
                                 minLines: 1000000,
                                 keyboardType: TextInputType.multiline,
-                                decoration: inputDecoration(labelText: "Code",contentPadding: const EdgeInsets.fromLTRB(10, 20, 10, 10)),
+                                decoration: inputDecoration(
+                                    labelText: "Code",
+                                    contentPadding: const EdgeInsets.fromLTRB(
+                                        10, 20, 10, 10)),
                                 onChanged: (text) {
                                   code = text;
                                 },
@@ -319,33 +279,32 @@ class _AddFormState extends State<AddForm> {
                                             const AddProjectLinksDialogWidget());
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    shape:const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.zero
-                                    )
-                                  ),
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.zero)),
                                   icon: const Icon(
                                     Icons.attachment,
                                     color: Colors.white,
                                   ),
                                   label: const Text(
-                                    "Add your links here",
+                                    "Add links",
                                     style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.white),
+                                        fontSize: 16, color: Colors.white),
                                   )),
                             )
                           : const SizedBox(
                               height: 30,
                             ),
-                      if(isProject)
-                        const SizedBox(height: 15,),
-                      if(isProject)
+                      if (isProject)
+                        const SizedBox(
+                          height: 15,
+                        ),
+                      if (isProject)
                         const Text(
                           "Added links",
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w600),
                         ),
-                      if(isProject)
+                      if (isProject)
                         const LinksListWidget(width: double.infinity),
                       const SizedBox(
                         height: 30,
@@ -357,17 +316,78 @@ class _AddFormState extends State<AddForm> {
                             style: ElevatedButton.styleFrom(
                                 shape: const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.zero)),
-                            onPressed: () {
+                            onPressed: () async {
                               if (isProject) {
-                                if (formKey.currentState!.validate()) {}
+
+                                if (formKey.currentState!.validate()) {
+                                  Types? value = await context
+                                      .read<ProjectDataProvider>()
+                                      .createProject(
+                                          title: _titleController.text,
+                                          description: _discriController.text,
+                                          links: linksProvider.linkMap);
+
+                                  if (value == Types.success) {
+                                    _titleController.clear();
+                                    _discriController.clear();
+                                    CommonAlertDialog.showDialogPopUp(context,
+                                        title: "Success",
+                                        lottieImage: Assets.lottieFilesSuccess,
+                                        subTitle:
+                                            "Project created successfully",
+                                        titleColor: Colors.green);
+                                       linksProvider.clearList();
+                                  } else if (value == Types.failed) {
+                                    CommonAlertDialog.showDialogPopUp(context,
+                                        title: "Failed",
+                                        lottieImage: Assets.lottieFilesFail,
+                                        subTitle:
+                                            "Project upload failed! Try again",
+                                        titleColor: Colors.red);
+                                  } else if (value == Types.server) {
+                                    CommonAlertDialog.showDialogPopUp(context,
+                                        title: "Server Error",
+                                        lottieImage: Assets.lottieFilesError,
+                                        subTitle: "Sorry try again",
+                                        titleColor: Colors.red);
+                                  }
+                                }
                               } else {
                                 if (formKey.currentState!.validate()) {
-                                  /* context
+                                  Types? value = await context
                                       .read<ProjectDataProvider>()
                                       .createDocument(
-                                      title: _titleController.text,
-                                      code: _codeController.text,
-                                      description: _discriController.text);*/
+                                          title: _titleController.text,
+                                          code: _codeController.text,
+                                          description: _discriController.text);
+
+                                  if (value == Types.success) {
+                                    _titleController.clear();
+                                    _codeController.clear();
+                                    _discriController.clear();
+                                    CommonAlertDialog.showDialogPopUp(context,
+                                        title: "Success",
+                                        lottieImage: Assets.lottieFilesSuccess,
+                                        subTitle:
+                                            "Document created successfully",
+                                        titleColor: Colors.green);
+                                    context
+                                        .read<ProjectDataProvider>()
+                                        .getProjectData();
+                                  } else if (value == Types.failed) {
+                                    CommonAlertDialog.showDialogPopUp(context,
+                                        title: "Failed",
+                                        lottieImage: Assets.lottieFilesFail,
+                                        subTitle:
+                                            "Document upload failed! Try again",
+                                        titleColor: Colors.red);
+                                  } else if (value == Types.server) {
+                                    CommonAlertDialog.showDialogPopUp(context,
+                                        title: "Server Error",
+                                        lottieImage: Assets.lottieFilesError,
+                                        subTitle: "Sorry try again",
+                                        titleColor: Colors.red);
+                                  }
                                 }
                               }
                             },

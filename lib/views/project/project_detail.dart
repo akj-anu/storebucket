@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-
+import 'package:storebucket/generated/assets.dart';
 import 'package:storebucket/views/project/widgets/Hover_card.dart';
 // import 'package:html/parser.dart' as htmlparser;
 // import 'package:html/dom.dart' as dom;
 import 'package:url_launcher/url_launcher.dart';
+
 
 // ignore: must_be_immutable
 class ProjectDetailsScreen extends StatefulWidget {
@@ -27,6 +28,7 @@ class ProjectDetailsScreen extends StatefulWidget {
 class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
   List<String> linkList = [];
   List<String> linkNameList = [];
+ // Map<String, PreviewData> datas = {};
 
   getLink() async {
     for (var element in widget.linkmap ?? {}) {
@@ -87,48 +89,75 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
 //       <h3>This is HTML page that we want to integrate with Flutter.</h3>
 //       """;
     return Scaffold(
-      backgroundColor: Colors.indigo[50],
+      backgroundColor: Colors.white,
       appBar: AppBar(
-          title: Text(widget.title ?? ''),
-          backgroundColor: Colors.grey[850],
-          automaticallyImplyLeading: true),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(30),
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Description',
-                textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              SelectableText(
-                widget.description ?? '',
-                textAlign: TextAlign.left,
-                style: const TextStyle(fontSize: 17, color: Colors.black54),
-              ),
-              const SizedBox(height: 40),
-              const Text(
-                'Links',
-                textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 30),
-              SizedBox(
+          backgroundColor: Colors.grey[850], automaticallyImplyLeading: true),
+      body: Container(
+        padding: const EdgeInsets.all(30),
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.title ?? '',
+                        style: const TextStyle(
+                            fontSize: 70, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 40),
+                      const Text(
+                        'Description',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      SelectableText(
+                        widget.description ?? '',
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(
+                            fontSize: 17, color: Colors.black54),
+                      ),
+                      const SizedBox(height: 30),
+                      const Text(
+                        'Links',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 30),
+                    ],
+                  ),
+                ),
+                Image.asset(
+                  Assets.imagesProjectImage,
+                  height: 300,
+                )
+              ],
+            ),
+            Container(width: double.infinity, height: 5, color: Colors.blue),
+            Expanded(
+              child: SizedBox(
                 width: double.infinity,
+                height: double.maxFinite,
                 child: GridView.builder(
+                  physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.all(10),
                   shrinkWrap: true,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisExtent: 150,
+                    mainAxisExtent: 200,
                     mainAxisSpacing: 20,
                     crossAxisSpacing: 20,
                     crossAxisCount: 6,
+                    // childAspectRatio: 8/16
                   ),
                   itemCount: widget.linkmap?.length ?? 0,
                   itemBuilder: (BuildContext context, int index) {
@@ -136,25 +165,48 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                       onTaped: () {
                         _launchUrl(index);
                       },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.attachment),
-                          const SizedBox(height: 10),
-                          Text(linkNameList[index].toString().toUpperCase(),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 5,
-                              style: const TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.bold)),
-                        ],
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                    color: Colors.blue.withOpacity(.8),
+                                    borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(5),
+                                        bottomRight: Radius.circular(5))),
+                                child: const Icon(
+                                  Icons.attachment,
+                                  color: Colors.white,
+                                )),
+                            const SizedBox(height: 20),
+                            Padding(
+                              padding:
+                              const EdgeInsets.symmetric(horizontal: 20),
+                              child: Center(
+                                child: Text(
+                                    linkNameList[index]
+                                        .toString()
+                                        .toUpperCase(),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 5,
+                                    style: const TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

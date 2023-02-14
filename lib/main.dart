@@ -65,13 +65,14 @@ class _MyAppState extends State<MyApp> {
                 }
                 if (snapshot.connectionState == ConnectionState.done) {
               //    return username == '' ? const LoginScreen() : const Home();
-                  return username == '' ? const LoginScreen() : const AddProjectOrDocScreen();
+                  return username == '' ? const LoginScreen() : const Home();
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 return const Center(child: CircularProgressIndicator());
-              })),
+              }),
+      ),
     );
   }
 }

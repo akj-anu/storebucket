@@ -113,9 +113,9 @@ class SelectPreviewImages extends StatelessWidget {
                                       height: 10,
                                     ),
                                     Text(
-                                      "Select up to 5 images",
+                                      "Select images",
                                       style: TextStyle(
-                                          fontSize: 13, color: Colors.black54),
+                                          fontSize: 12, color: Colors.black54),
                                       textAlign: TextAlign.center,
                                     )
                                   ],

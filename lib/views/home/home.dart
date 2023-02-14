@@ -245,60 +245,6 @@ class _HomeState extends State<Home> {
               ),
             ],
           ),
-          /*     actions: [
-                //  ElevatedButton(
-                //     style: ButtonStyle(
-                //       backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
-                //     ),
-                //     onPressed: () {},
-                //     child: const Text("DASHBOARD")),
-                ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
-                    ),
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (context) {
-                            return const Project();
-                          }), (route) => false);
-                      // Navigator.push(context, );
-                    },
-                    child: const Text("PROJECTS")),
-                ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        isDataAdded = true;
-                        searchData = null;
-                        searchElement = "";
-                        searchedData = null;
-                        Home.searchDataList = null;
-                        _searchController.text = "";
-                      });
-                    },
-                    child: const Text("CLEAR")),
-                const Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: Center(
-                      child: Text(
-                        "BETA v1",
-                        style: TextStyle(color: Colors.white),
-                      )),
-                ),
-                ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.grey[850]),
-                    ),
-                    onPressed: () {
-                      UserManager.removeuser().then((value) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => const LoginScreen()));
-                      });
-                    },
-                    child: const Text("LOGOUT")),
-              ],*/
         ),
         drawer: const CustomDrawer(),
         mobileView: Selector<
@@ -325,62 +271,232 @@ class _HomeState extends State<Home> {
               return SizedBox(
                 width: size.width,
                 height: size.height,
-                child: Column(
-                  children: [
-                    Search(width: size.width, hideName: true),
-                    const Expanded(
-                      child: HomeGridView(),
-                    ),
-                  ],
-                ),
+                child: Selector<ProjectDataProvider,
+                        Tuple5<bool, bool, int, int, bool>>(
+                    selector: (_, s) => Tuple5(
+                        s.isImageUploading,
+                        s.isDocumentsUploading,
+                        s.imageUploadedCount,
+                        s.selectedImages.length,
+                        s.isProjectUploading),
+                    builder: (_, v, __) {
+                      return Stack(
+                        children: [
+                          Column(
+                            children: [
+                              Search(width: size.width, hideName: true),
+                              const Expanded(
+                                child: HomeGridView(),
+                              ),
+                            ],
+                          ),
+                          if (v.item1 || v.item2 || v.item5)
+                            Container(
+                              color: Colors.black54,
+                              width: size.width,
+                              height: size.height,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: CircularProgressIndicator(
+                                      backgroundColor: Colors.white,
+                                      color: Colors.blue,
+                                      strokeWidth: 2.5,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  if (v.item1)
+                                    Text(
+                                      "Images uploading...(${v.item3}/${v.item4})",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  if (v.item2 || v.item5)
+                                    Text(
+                                      v.item5
+                                          ? "Project uploading..."
+                                          : "Document uploading...",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                      ),
+                                    )
+                                ],
+                              ),
+                            )
+                        ],
+                      );
+                    }),
               );
             }),
         tabletView: SizedBox(
           width: size.width,
           height: size.height,
-          child: Column(
-            children: [
-              const Search(hideName: false),
-              Expanded(
-                child: SizedBox(
-                  width: size.width,
-                  child: Row(
-                    children: const [
-                      Flexible(
-                        flex: 4,
+          child: Selector<ProjectDataProvider,
+              Tuple5<bool, bool, int, int, bool>>(
+              selector: (_, s) => Tuple5(
+                  s.isImageUploading,
+                  s.isDocumentsUploading,
+                  s.imageUploadedCount,
+                  s.selectedImages.length,
+                  s.isProjectUploading),
+              builder: (_, v, __) {
+              return Stack(
+                children: [
+                  Column(
+                    children: [
+                      const Search(hideName: false),
+                      Expanded(
                         child: SizedBox(
-                          child: AddForm(),
+                          width: size.width,
+                          child: Row(
+                            children: const [
+                              Flexible(
+                                flex: 4,
+                                child: SizedBox(
+                                  child: AddForm(),
+                                ),
+                              ),
+                              Flexible(flex: 6, child: HomeGridView()),
+                            ],
+                          ),
                         ),
-                      ),
-                      Flexible(flex: 6, child: HomeGridView()),
+                      )
                     ],
                   ),
-                ),
-              )
-            ],
+                  if (v.item1 || v.item2 || v.item5)
+                    Container(
+                      color: Colors.black54,
+                      width: size.width,
+                      height: size.height,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(
+                              backgroundColor: Colors.white,
+                              color: Colors.blue,
+                              strokeWidth: 2.5,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          if (v.item1)
+                            Text(
+                              "Images uploading...(${v.item3}/${v.item4})",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          if (v.item2 || v.item5)
+                            Text(
+                              v.item5
+                                  ? "Project uploading..."
+                                  : "Document uploading...",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            )
+                        ],
+                      ),
+                    )
+                ],
+              );
+            }
           ),
         ),
         webView: SizedBox(
           width: size.width,
           height: size.height,
-          child: Column(
-            children: [
-              const Search(hideName: false),
-              Expanded(
-                child: SizedBox(
-                  width: size.width,
-                  child: Row(
-                    children: const [
-                      Flexible(
-                        flex: 3,
-                        child: SizedBox(child: AddForm()),
-                      ),
-                      Flexible(flex: 7, child: HomeGridView()),
+          child: Selector<ProjectDataProvider,
+              Tuple5<bool, bool, int, int, bool>>(
+              selector: (_, s) => Tuple5(
+                  s.isImageUploading,
+                  s.isDocumentsUploading,
+                  s.imageUploadedCount,
+                  s.selectedImages.length,
+                  s.isProjectUploading),
+              builder: (_, v, __) {
+              return Stack(
+                children: [
+                  Column(
+                    children: [
+                      const Search(hideName: false),
+                      Expanded(
+                        child: SizedBox(
+                          width: size.width,
+                          child: Row(
+                            children: const [
+                              Flexible(
+                                flex: 3,
+                                child: SizedBox(child: AddForm()),
+                              ),
+                              Flexible(flex: 7, child: HomeGridView()),
+                            ],
+                          ),
+                        ),
+                      )
                     ],
                   ),
-                ),
-              )
-            ],
+                  if (v.item1 || v.item2 || v.item5)
+                    Container(
+                      color: Colors.black54,
+                      width: size.width,
+                      height: size.height,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(
+                              backgroundColor: Colors.white,
+                              color: Colors.blue,
+                              strokeWidth: 2.5,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          if (v.item1)
+                            Text(
+                              "Images uploading...(${v.item3}/${v.item4})",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          if (v.item2 || v.item5)
+                            Text(
+                              v.item5
+                                  ? "Project uploading..."
+                                  : "Document uploading...",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            )
+                        ],
+                      ),
+                    )
+                ],
+              );
+            }
           ),
         ));
   }

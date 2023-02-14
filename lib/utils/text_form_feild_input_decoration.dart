@@ -4,6 +4,7 @@ InputDecoration inputDecoration(
         {String? labelText,
         String? hintText,
         bool isRequiredBorder = true,
+          Color?borderColor,
         EdgeInsetsGeometry? contentPadding}) =>
     InputDecoration(
         labelText: labelText,
@@ -14,9 +15,9 @@ InputDecoration inputDecoration(
             contentPadding ?? const EdgeInsets.fromLTRB(10, 0, 10, 0),
         border: isRequiredBorder ? null : InputBorder.none,
         enabledBorder: isRequiredBorder
-            ? const OutlineInputBorder(
+            ?  OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: Colors.black))
+                borderSide: BorderSide(color:borderColor?? Colors.black))
             : null,
         focusedErrorBorder: isRequiredBorder
             ? const OutlineInputBorder(
@@ -29,8 +30,8 @@ InputDecoration inputDecoration(
                 borderSide: BorderSide(color: Colors.red))
             : null,
         focusedBorder: isRequiredBorder
-            ? const OutlineInputBorder(
+            ?  OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: Colors.black))
+                borderSide: BorderSide(color:borderColor?? Colors.black))
             : null,
-        hintStyle: TextStyle(color: Colors.grey[500]!, fontSize: 13));
+        hintStyle: TextStyle(color:borderColor?? Colors.grey[500]!, fontSize: 13));

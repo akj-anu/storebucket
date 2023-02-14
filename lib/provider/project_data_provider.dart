@@ -1,13 +1,10 @@
-import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker_web/image_picker_web.dart';
+import 'package:storebucket/common/statges.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
-import 'package:storebucket/views/home/home.dart';
 import 'package:storebucket/views/home/widget/add_form.dart';
 
 class ProjectDataProvider extends ChangeNotifier {
@@ -86,7 +83,7 @@ class ProjectDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  deleteImagesFromLocal(int i){
+  deleteImagesFromLocal(int i) {
     selectedImages.removeAt(i);
     notifyListeners();
   }
@@ -123,7 +120,7 @@ class ProjectDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool?>createDocument({
+  Future<Types?> createDocument({
     required String title,
     required String description,
     required String code,
@@ -134,7 +131,7 @@ class ProjectDataProvider extends ChangeNotifier {
     List<String> imageUrls = [];
 
     if (selectedImages.isNotEmpty) {
-      imageUploadedCount=0;
+      imageUploadedCount = 0;
       updateImageUploading(true);
       for (var i in selectedImages) {
         String url = await uploadToStorage(image: i);
@@ -142,9 +139,12 @@ class ProjectDataProvider extends ChangeNotifier {
         imageUploadedCount = imageUrls.length;
         notifyListeners();
       }
-      Future.delayed(const Duration(seconds: 1),()=>updateImageUploading(false)).then((value) => updateDocumentsUploading(true));
+      Future.delayed(
+              const Duration(seconds: 1), () => updateImageUploading(false))
+          .then((value) => updateDocumentsUploading(true));
     }
-    document.add({
+    updateDocumentsUploading(true);
+    return await document.add({
       'title': title,
       'description': description,
       'code': code,
@@ -153,14 +153,75 @@ class ProjectDataProvider extends ChangeNotifier {
       'create_at': DateTime.now().toIso8601String(),
       'email': email
     }).then((value) {
+      imageUrls = [];
+      selectedImages = [];
+      isImageSelected=false;
       updateDocumentsUploading(false);
       updateImageUploading(false);
+      return Types.success;
+    }).catchError((error) {
+      if (error.toString() == "Internal errors.") {
+        imageUrls = [];
+        selectedImages = [];
+        isImageSelected=false;
+        updateDocumentsUploading(false);
+        updateImageUploading(false);
+        return Types.server;
+      } else {
+        imageUrls = [];
+        selectedImages = [];
+        isImageSelected=false;
+        updateDocumentsUploading(false);
+        updateImageUploading(false);
+        return Types.failed;
+      }
+    });
+  }
+
+  bool isProjectUploading = false;
+
+  updateProjectUploading(bool v) {
+    isProjectUploading = v;
+    notifyListeners();
+  }
+
+  Future<Types?> createProject(
+      {required String title,
+      required String description,
+      required List<Map<String, dynamic>> links}) async {
+    String userName = await UserManager.getUser();
+    String email = await UserManager.getEmail();
+
+    updateProjectUploading(true);
+    return await project.add({
+      'title': title,
+      'description': description,
+      'name': userName,
+      'linkmap': links,
+      'create_at': DateTime.now().toIso8601String(),
+      'email': email
+    }).then((value) {
+      updateProjectUploading(false);
+      return Types.success;
+    }).catchError((error) {
+      updateProjectUploading(false);
+      if (error.toString() == "Internal errors.") {
+        return Types.server;
+      } else {
+        return Types.failed;
+      }
+    });
+  }
+
+  Future<bool> delete(int i, String id) async {
+    return await document
+        .doc(id) // <-- Doc ID to be deleted.
+        .delete() // <-- Delete
+        .then((_) {
+          getProjectData();
       return true;
     }).catchError((error) {
-      updateDocumentsUploading(false);
-      updateImageUploading(false);
-      return null;
+      return false;
     });
-    return null;
   }
 }

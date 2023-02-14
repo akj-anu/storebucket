@@ -6,6 +6,10 @@ import 'package:storebucket/views/home/home.dart';
 import 'package:storebucket/views/home/widget/add_form.dart';
 import 'package:storebucket/provider/project_data_provider.dart';
 import 'package:storebucket/views/add_project/add_project_or_doc_screen.dart';
+import 'package:storebucket/views/home/widget/login.dart';
+import 'package:storebucket/views/project/project.dart';
+
+import '../../../managers/shared_preference_manager.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key? key}) : super(key: key);
@@ -86,6 +90,18 @@ class CustomDrawer extends StatelessWidget {
                 Navigator.pop(context);
                 context.read<ProjectDataProvider>().getProjectData();
               },
+              title: "Home",
+              icon: CupertinoIcons.home,
+            ),
+            CustomListTile(
+              onTap: () {
+                /*         Navigator.pop(context);
+                context.read<ProjectDataProvider>().getProjectData();*/
+                Navigator.pushAndRemoveUntil(context,
+                    MaterialPageRoute(builder: (context) {
+                  return const Project();
+                }), (route) => false);
+              },
               title: "Projects",
               icon: CupertinoIcons.doc_text_search,
             ),
@@ -93,7 +109,10 @@ class CustomDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 context.read<ProjectDataProvider>().setType(ChooseType.project);
-                Navigator.push(context, MaterialPageRoute(builder: (_)=>const AddProjectOrDocScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const AddProjectOrDocScreen()));
               },
               title: "Add Projects",
               icon: CupertinoIcons.plus_rectangle_on_rectangle,
@@ -102,7 +121,10 @@ class CustomDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 context.read<ProjectDataProvider>().setType(ChooseType.doc);
-                Navigator.push(context, MaterialPageRoute(builder: (_)=>const AddProjectOrDocScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const AddProjectOrDocScreen()));
               },
               title: "Add Docs",
               icon: CupertinoIcons.add_circled,
@@ -121,7 +143,12 @@ class CustomDrawer extends StatelessWidget {
               height: 5,
             ),
             CustomListTile(
-              onTap: () {},
+              onTap: () {
+                UserManager.removeuser().then((value) {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const LoginScreen()));
+                });
+              },
               title: "Logout",
               icon: Icons.logout_outlined,
             ),

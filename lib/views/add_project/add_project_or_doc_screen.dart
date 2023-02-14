@@ -81,9 +81,13 @@ class AddProjectOrDocWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var h = MediaQuery.of(context).size.height;
 
-    return Selector<ProjectDataProvider, Tuple4<bool, bool, int, int>>(
-        selector: (_, s) => Tuple4(s.isImageUploading, s.isDocumentsUploading,
-            s.imageUploadedCount, s.selectedImages.length),
+    return Selector<ProjectDataProvider, Tuple5<bool, bool, int, int, bool>>(
+        selector: (_, s) => Tuple5(
+            s.isImageUploading,
+            s.isDocumentsUploading,
+            s.imageUploadedCount,
+            s.selectedImages.length,
+            s.isProjectUploading),
         builder: (_, v, __) {
           return Stack(
             children: [
@@ -100,7 +104,7 @@ class AddProjectOrDocWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              if (v.item1 || v.item2)
+              if (v.item1 || v.item2 || v.item5)
                 Container(
                   color: Colors.black54,
                   width: width,
@@ -129,10 +133,12 @@ class AddProjectOrDocWidget extends StatelessWidget {
                             fontSize: 16,
                           ),
                         ),
-                      if (v.item2)
-                        const Text(
-                          "Document uploading...",
-                          style: TextStyle(
+                      if (v.item2 || v.item5)
+                        Text(
+                          v.item5
+                              ? "Project uploading..."
+                              : "Document uploading...",
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
                           ),

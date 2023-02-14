@@ -47,4 +47,9 @@ class LinkProvider extends ChangeNotifier {
     linkErrorMessage = error;
     notifyListeners();
   }
+
+  clearList(){
+    linkMap=[];
+    notifyListeners();
+  }
 }

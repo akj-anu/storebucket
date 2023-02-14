@@ -8,5 +8,9 @@ class Assets {
   static const String iconsNoSearchData = 'assets/icons/no_search_data.png';
   static const String iconsProject = 'assets/icons/project.png';
   static const String iconsVersion = 'assets/icons/version.png';
+  static const String imagesProjectImage = 'assets/images/project_image.png';
+  static const String lottieFilesError = 'assets/lottie_files/error.json';
+  static const String lottieFilesFail = 'assets/lottie_files/fail.json';
+  static const String lottieFilesSuccess = 'assets/lottie_files/success.json';
 
 }

@@ -8,6 +8,7 @@ import 'package:storebucket/views/home/home.dart';
 import 'package:storebucket/views/home/widget/details.dart';
 import 'package:storebucket/provider/project_data_provider.dart';
 import 'package:storebucket/utils/colors.dart';
+import 'package:storebucket/views/home/widget/update_bottomsheet.dart';
 import 'package:storebucket/views/widgets/common_success_failure_dailog.dart';
 import 'package:storebucket/views/widgets/no_data_found.dart';
 import 'package:tuple/tuple.dart';
@@ -209,7 +210,7 @@ class HomeGridView extends StatelessWidget {
                                                   child: PopupMenuButton(
                                                       iconSize: 20,
                                                       itemBuilder:
-                                                          (_) => <
+                                                          (context) => <
                                                                   PopupMenuItem<
                                                                       String>>[
                                                                 PopupMenuItem<
@@ -230,8 +231,6 @@ class HomeGridView extends StatelessWidget {
                                                                             'Edit'),
                                                                       ],
                                                                     ),
-                                                                    onTap:
-                                                                        () {},
                                                                     value:
                                                                         'edit'),
                                                                 PopupMenuItem<
@@ -252,35 +251,51 @@ class HomeGridView extends StatelessWidget {
                                                                             'Delete'),
                                                                       ],
                                                                     ),
-                                                                    onTap: () {
-                                                                      context
-                                                                          .read<
-                                                                              ProjectDataProvider>()
-                                                                          .delete(
-                                                                              i,
-                                                                              dataList[i].id)
-                                                                          .then((value) {
-                                                                            print("Value $value");
-                                                                        if (value) {
-                                                                          CommonAlertDialog.showDialogPopUp(
-                                                                              context,
-                                                                              title: "Success",
-                                                                              lottieImage: Assets.lottieFilesSuccess,
-                                                                              subTitle: "Document deleted",
-                                                                              titleColor: Colors.green);
-                                                                        } else {
-                                                                          CommonAlertDialog.showDialogPopUp(
-                                                                              context,
-                                                                              title: "Failed",
-                                                                              lottieImage: Assets.lottieFilesFail,
-                                                                              subTitle: "Failed to delete!.Try again",
-                                                                              titleColor: Colors.red);
-                                                                        }
-                                                                      });
-                                                                    },
+
                                                                     value:
                                                                         'delete'),
-                                                              ]),
+                                                              ],
+                                                  onSelected: (key){
+                                                        if(key=="edit"){
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (context) => UpdateBottomSheet(
+                                                                  title: dataList[i]['title'] ?? '',
+                                                                                description: dataList[i]['description'] ?? '',
+                                                                                code: dataList[i]['code'] ?? ''
+
+                                                                ),
+                                                              ));
+                                                        }else if(key=="delete"){
+                                                          context
+                                                              .read<
+                                                              ProjectDataProvider>()
+                                                              .delete(
+                                                              i,
+                                                              dataList[i].id)
+                                                              .then((value) {
+                                                            print(
+                                                                "Value $value");
+                                                            if (value) {
+                                                              CommonAlertDialog.showDialogPopUp(
+                                                                  context,
+                                                                  title: "Success",
+                                                                  lottieImage: Assets.lottieFilesSuccess,
+                                                                  subTitle: "Document deleted",
+                                                                  titleColor: Colors.green);
+                                                            } else {
+                                                              CommonAlertDialog.showDialogPopUp(
+                                                                  context,
+                                                                  title: "Failed",
+                                                                  lottieImage: Assets.lottieFilesFail,
+                                                                  subTitle: "Failed to delete!.Try again",
+                                                                  titleColor: Colors.red);
+                                                            }
+                                                          });
+                                                        }
+                                                  },
+                                                  ),
                                                 ))
                                         ],
                                       );

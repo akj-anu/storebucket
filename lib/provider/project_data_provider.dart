@@ -155,7 +155,7 @@ class ProjectDataProvider extends ChangeNotifier {
     }).then((value) {
       imageUrls = [];
       selectedImages = [];
-      isImageSelected=false;
+      isImageSelected = false;
       updateDocumentsUploading(false);
       updateImageUploading(false);
       return Types.success;
@@ -163,14 +163,14 @@ class ProjectDataProvider extends ChangeNotifier {
       if (error.toString() == "Internal errors.") {
         imageUrls = [];
         selectedImages = [];
-        isImageSelected=false;
+        isImageSelected = false;
         updateDocumentsUploading(false);
         updateImageUploading(false);
         return Types.server;
       } else {
         imageUrls = [];
         selectedImages = [];
-        isImageSelected=false;
+        isImageSelected = false;
         updateDocumentsUploading(false);
         updateImageUploading(false);
         return Types.failed;
@@ -218,7 +218,7 @@ class ProjectDataProvider extends ChangeNotifier {
         .doc(id) // <-- Doc ID to be deleted.
         .delete() // <-- Delete
         .then((_) {
-          getProjectData();
+      getProjectData();
       return true;
     }).catchError((error) {
       return false;

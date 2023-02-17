@@ -442,10 +442,10 @@ class _HomeState extends State<Home> {
                           child: Row(
                             children: const [
                               Flexible(
-                                flex: 3,
+                                flex: 2,
                                 child: SizedBox(child: AddForm()),
                               ),
-                              Flexible(flex: 7, child: HomeGridView()),
+                              Flexible(flex: 8, child: HomeGridView()),
                             ],
                           ),
                         ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -78,241 +80,313 @@ class HomeGridView extends StatelessWidget {
                                       "It seems that you have searched item not found!.Search again.",
                                 )
                               : SizedBox(
-                                  child: GridView.builder(
-                                    physics: const BouncingScrollPhysics(),
-                                    itemCount: dataList.length,
-                                    cacheExtent: 99999,
-                                    itemBuilder: (_, i) {
-                                      return Stack(
-                                        children: [
-                                          InkWell(
-                                            onTap: () {
-                                              Navigator.of(context)
-                                                  .push(MaterialPageRoute(
-                                                builder: (context) =>
-                                                    DetailsScreen(
-                                                  code: dataList[i]['code'],
-                                                  title: dataList[i]['title'],
-                                                  description: dataList[i]
-                                                      ['description'],
-                                                  username: dataList[i]['name'],
-                                                ),
-                                              ));
-                                            },
-                                            child: Card(
-                                              elevation: 2,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(16),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Container(
-                                                          width: 50,
-                                                          height: 50,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: getColors(dataList[
-                                                                            i][
-                                                                        'name'] !=
-                                                                    ""
-                                                                ? dataList[i][
-                                                                        'name'][0]
-                                                                    .toString()
-                                                                    .toUpperCase()
-                                                                : "U"),
-                                                            shape:
-                                                                BoxShape.circle,
-                                                          ),
-                                                          child: Center(
-                                                            child: Text(
-                                                              dataList[i]['name'] !=
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: GridView.builder(
+                                      physics: const BouncingScrollPhysics(),
+                                      itemCount: dataList.length,
+                                      cacheExtent: 99999,
+                                      itemBuilder: (_, i) {
+                                        return Stack(
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                Navigator.of(context)
+                                                    .push(MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DocumentDetailsScreen(
+                                                    code: dataList[i]['code'],
+                                                    title: dataList[i]['title'],
+                                                    description: dataList[i]
+                                                        ['description'],
+                                                    username: dataList[i]['name'],
+                                                        images:dataList[i]['preview_images'] ,
+                                                  ),
+                                                ));
+                                              },
+                                              child: Card(
+                                                elevation: 2,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(16),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            width: 50,
+                                                            height: 50,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                    /*     color: getColors(dataList[
+                                                                              i][
+                                                                          'name'] !=
                                                                       ""
                                                                   ? dataList[i][
-                                                                      'name'][0]
-                                                                  : "U",
-                                                              style: const TextStyle(
-                                                                  fontSize: 20,
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
+                                                                          'name'][0]
+                                                                      .toString()
+                                                                      .toUpperCase()
+                                                                  : "U"),*/
+
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    border: Border.all(
+                                                                        color: getColors(dataList[i]['name'] !=
+                                                                                ""
+                                                                            ? dataList[i]['name'][0]
+                                                                                .toString()
+                                                                                .toUpperCase()
+                                                                            : "U"),
+                                                                        width:
+                                                                            3)),
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(5.0),
+                                                              child: Container(
+                                                                decoration: BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    color: Colors
+                                                                        .white),
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    dataList[i]['name'] !=
+                                                                            ""
+                                                                        ? dataList[
+                                                                                i]
+                                                                            [
+                                                                            'name'][0]
+                                                                        : "U",
+                                                                    style: const TextStyle(
+                                                                        fontSize:
+                                                                            20,
+                                                                        color: Colors
+                                                                            .blue,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold),
+                                                                  ),
+                                                                ),
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Expanded(
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Container(
-                                                                child: Text(dataList[i]['name'] !=
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Expanded(
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Container(
+                                                                  child: Text(
+                                                                    dataList[i]['name'] !=
                                                                             ""
-                                                                        ? dataList[i]
+                                                                        ? dataList[
+                                                                                i]
                                                                             [
                                                                             'name']
-                                                                        : "User")
-                                                                    .avoidOverFlow(),
-                                                              ),
-                                                              const Text(
-                                                                  "@hi,very cool"),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                      dataList[i]['title']
-                                                          .toString()
-                                                          .camelCase(),
-                                                      maxLines: 1,
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
+                                                                        : "User",
+                                                                    style: const TextStyle(
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w600,
+                                                                        color: Colors
+                                                                            .black),
+                                                                  ).avoidOverFlow(),
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    const Icon(
+                                                                        Icons
+                                                                            .email_outlined,
+                                                                        size: 20,
+                                                                        color: Colors
+                                                                            .black54),
+                                                                    const SizedBox(
+                                                                      width: 5,
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: Text(
+                                                                        dataList[i]['email'] !=
+                                                                                ""
+                                                                            ? dataList[i]
+                                                                                [
+                                                                                'email']
+                                                                            : "N/A",
+                                                                        style: const TextStyle(
+                                                                            fontSize:
+                                                                                14,
+                                                                            color: Colors
+                                                                                .black54),
+                                                                      ).avoidOverFlow(),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )
+                                                        ],
                                                       ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    Text(
-                                                      dataList[i]
-                                                          ['description'],
-                                                      style: const TextStyle(
-                                                          color: Colors.black87,
-                                                          fontSize: 13),
-                                                    ).avoidOverFlow(
-                                                      maxLine: 2,
-                                                    ),
-                                                  ],
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Text(
+                                                        dataList[i]['title']
+                                                            .toString()
+                                                            .camelCase(),
+                                                        maxLines: 1,
+                                                        style: const TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w600),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                      Text(
+                                                        dataList[i]
+                                                            ['description'],
+                                                        style: const TextStyle(
+                                                            color: Colors.black87,
+                                                            fontSize: 13),
+                                                      ).avoidOverFlow(
+                                                        maxLine: 2,
+                                                      ),
+
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          if (Home.username ==
-                                              dataList[i]['name'])
-                                            Positioned(
-                                                right: 5,
-                                                top: 10,
-                                                child: Center(
-                                                  child: PopupMenuButton(
+                                            if (Home.username ==
+                                                dataList[i]['name'])
+                                              Positioned(
+                                                  right: 5,
+                                                  top: 10,
+                                                  child: Center(
+                                                    child: PopupMenuButton(
                                                       iconSize: 20,
-                                                      itemBuilder:
-                                                          (context) => <
-                                                                  PopupMenuItem<
-                                                                      String>>[
-                                                                PopupMenuItem<
-                                                                        String>(
-                                                                    child: Row(
-                                                                      children: const [
-                                                                        Icon(
-                                                                          Icons
-                                                                              .edit,
-                                                                          color:
-                                                                              Colors.blue,
-                                                                        ),
-                                                                        SizedBox(
-                                                                          width:
-                                                                              7,
-                                                                        ),
-                                                                        Text(
-                                                                            'Edit'),
-                                                                      ],
-                                                                    ),
-                                                                    value:
-                                                                        'edit'),
-                                                                PopupMenuItem<
-                                                                        String>(
-                                                                    child: Row(
-                                                                      children: const [
-                                                                        Icon(
-                                                                          Icons
-                                                                              .delete,
-                                                                          color:
-                                                                              Colors.red,
-                                                                        ),
-                                                                        SizedBox(
-                                                                          width:
-                                                                              7,
-                                                                        ),
-                                                                        Text(
-                                                                            'Delete'),
-                                                                      ],
-                                                                    ),
-
-                                                                    value:
-                                                                        'delete'),
+                                                      itemBuilder: (context) =>
+                                                          <PopupMenuItem<String>>[
+                                                        PopupMenuItem<String>(
+                                                            child: Row(
+                                                              children: const [
+                                                                Icon(
+                                                                  Icons.edit,
+                                                                  color:
+                                                                      Colors.blue,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 7,
+                                                                ),
+                                                                Text('Edit'),
                                                               ],
-                                                  onSelected: (key){
-                                                        if(key=="edit"){
+                                                            ),
+                                                            value: 'edit'),
+                                                        PopupMenuItem<String>(
+                                                            child: Row(
+                                                              children: const [
+                                                                Icon(
+                                                                  Icons.delete,
+                                                                  color:
+                                                                      Colors.red,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 7,
+                                                                ),
+                                                                Text('Delete'),
+                                                              ],
+                                                            ),
+                                                            value: 'delete'),
+                                                      ],
+                                                      onSelected: (key) {
+                                                        if (key == "edit") {
                                                           Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
                                                                 builder: (context) => UpdateBottomSheet(
-                                                                  title: dataList[i]['title'] ?? '',
-                                                                                description: dataList[i]['description'] ?? '',
-                                                                                code: dataList[i]['code'] ?? ''
-
-                                                                ),
+                                                                    title: dataList[
+                                                                                i]
+                                                                            [
+                                                                            'title'] ??
+                                                                        '',
+                                                                    description:
+                                                                        dataList[i]
+                                                                                [
+                                                                                'description'] ??
+                                                                            '',
+                                                                    code: dataList[
+                                                                                i]
+                                                                            [
+                                                                            'code'] ??
+                                                                        ''),
                                                               ));
-                                                        }else if(key=="delete"){
+                                                        } else if (key ==
+                                                            "delete") {
                                                           context
                                                               .read<
-                                                              ProjectDataProvider>()
-                                                              .delete(
-                                                              i,
-                                                              dataList[i].id)
+                                                                  ProjectDataProvider>()
+                                                              .delete(i,
+                                                                  dataList[i].id)
                                                               .then((value) {
-                                                            print(
-                                                                "Value $value");
+                                                            print("Value $value");
                                                             if (value) {
                                                               CommonAlertDialog.showDialogPopUp(
                                                                   context,
-                                                                  title: "Success",
-                                                                  lottieImage: Assets.lottieFilesSuccess,
-                                                                  subTitle: "Document deleted",
-                                                                  titleColor: Colors.green);
+                                                                  title:
+                                                                      "Success",
+                                                                  lottieImage: Assets
+                                                                      .lottieFilesSuccess,
+                                                                  subTitle:
+                                                                      "Document deleted",
+                                                                  titleColor:
+                                                                      Colors
+                                                                          .green);
                                                             } else {
-                                                              CommonAlertDialog.showDialogPopUp(
-                                                                  context,
-                                                                  title: "Failed",
-                                                                  lottieImage: Assets.lottieFilesFail,
-                                                                  subTitle: "Failed to delete!.Try again",
-                                                                  titleColor: Colors.red);
+                                                              CommonAlertDialog
+                                                                  .showDialogPopUp(
+                                                                      context,
+                                                                      title:
+                                                                          "Failed",
+                                                                      lottieImage:
+                                                                          Assets
+                                                                              .lottieFilesFail,
+                                                                      subTitle:
+                                                                          "Failed to delete!.Try again",
+                                                                      titleColor:
+                                                                          Colors
+                                                                              .red);
                                                             }
                                                           });
                                                         }
-                                                  },
-                                                  ),
-                                                ))
-                                        ],
-                                      );
-                                    },
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount:
-                                                getCount(size.width),
-                                            mainAxisSpacing: 15,
-                                            crossAxisSpacing: 15,
-                                            childAspectRatio: size.width > 700
-                                                ? 230 / 190
-                                                : size.width > 500
-                                                    ? 230 / 130
-                                                    : 230 / 70),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
+                                                      },
+                                                    ),
+                                                  ))
+                                          ],
+                                        );
+                                      },
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount:
+                                                  getCount(size.width),
+                                              mainAxisSpacing: 15,
+                                              crossAxisSpacing: 15,
+                                              childAspectRatio: size.width > 700
+                                                  ? 230 / 190
+                                                  : size.width > 500
+                                                      ? 230 / 130
+                                                      : 230 / 70),
+                                    ),
                                   ),
                                 ),
                 ),

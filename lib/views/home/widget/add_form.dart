@@ -294,17 +294,17 @@ class _AddFormState extends State<AddForm> {
                           : const SizedBox(
                               height: 30,
                             ),
-                      if (isProject)
+                      if (linksProvider.linkMap.isNotEmpty)
                         const SizedBox(
                           height: 15,
                         ),
-                      if (isProject)
+                      if (linksProvider.linkMap.isNotEmpty)
                         const Text(
                           "Added links",
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w600),
                         ),
-                      if (isProject)
+                      if (linksProvider.linkMap.isNotEmpty)
                         const LinksListWidget(width: double.infinity),
                       const SizedBox(
                         height: 30,

@@ -17,10 +17,12 @@ class SelectPreviewImages extends StatelessWidget {
           const SizedBox(
             height: 30,
           ),
-          Text(
-            values.isImageSelected ? "Selected preview images" : "Add previews",
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          if(values.isImageSelected)
+          const Text(
+             "Selected preview images",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
+          if(values.isImageSelected)
           const SizedBox(
             height: 15,
           ),

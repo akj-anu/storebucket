@@ -120,7 +120,7 @@ class HomeGridView extends StatelessWidget {
                                                             height: 50,
                                                             decoration:
                                                                 BoxDecoration(
-                                                                    /*     color: getColors(dataList[
+                                                                         color: getColors(dataList[
                                                                               i][
                                                                           'name'] !=
                                                                       ""
@@ -128,47 +128,32 @@ class HomeGridView extends StatelessWidget {
                                                                           'name'][0]
                                                                       .toString()
                                                                       .toUpperCase()
-                                                                  : "U"),*/
+                                                                  : "U"),
 
                                                                     shape: BoxShape
                                                                         .circle,
-                                                                    border: Border.all(
-                                                                        color: getColors(dataList[i]['name'] !=
-                                                                                ""
-                                                                            ? dataList[i]['name'][0]
-                                                                                .toString()
-                                                                                .toUpperCase()
-                                                                            : "U"),
-                                                                        width:
-                                                                            3)),
+                                                                  ),
                                                             child: Padding(
                                                               padding:
                                                                   const EdgeInsets
                                                                       .all(5.0),
-                                                              child: Container(
-                                                                decoration: BoxDecoration(
-                                                                    shape: BoxShape
-                                                                        .circle,
-                                                                    color: Colors
-                                                                        .white),
-                                                                child: Center(
-                                                                  child: Text(
-                                                                    dataList[i]['name'] !=
-                                                                            ""
-                                                                        ? dataList[
-                                                                                i]
-                                                                            [
-                                                                            'name'][0]
-                                                                        : "U",
-                                                                    style: const TextStyle(
-                                                                        fontSize:
-                                                                            20,
-                                                                        color: Colors
-                                                                            .blue,
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold),
-                                                                  ),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  dataList[i]['name'] !=
+                                                                          ""
+                                                                      ? dataList[
+                                                                              i]
+                                                                          [
+                                                                          'name'][0]
+                                                                      : "U",
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          20,
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
                                                                 ),
                                                               ),
                                                             ),

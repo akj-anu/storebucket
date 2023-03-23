@@ -8,7 +8,6 @@ import 'package:storebucket/views/home/widget/login.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
 import 'package:storebucket/provider/link_provider.dart';
 import 'package:storebucket/provider/project_data_provider.dart';
-import 'package:storebucket/views/add_project/add_project_or_doc_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +41,7 @@ class _MyAppState extends State<MyApp> {
 
   getUserName() async {
     var u = await UserManager.getUser();
-    username=u=="UnknownUser"?'':u;
+    username = u == "UnknownUser" ? '' : u;
     debugPrint(username);
   }
 
@@ -54,27 +53,61 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => ProjectDataProvider()),
       ],
       child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          scrollBehavior: MyCustomScrollBehavior(),
-          title: 'storebucket',
-          theme: ThemeData(
-            fontFamily: "Montserrat"
-          ),
-          home: FutureBuilder(
-              future: _init,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const Center(child: Text("ERROR"));
-                }
-                if (snapshot.connectionState == ConnectionState.done) {
-              //    return username == '' ? const LoginScreen() : const Home();
-                  return username == '' ? const LoginScreen() : const Home();
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+        debugShowCheckedModeBanner: false,
+        scrollBehavior: MyCustomScrollBehavior(),
+        title: 'storebucket',
+        theme: ThemeData(fontFamily: "Montserrat"),
+        /*    home: ProjectDetailsScreen(
+        title: "Nest Matrimony",
+        description: "Nest",
+        linkmap: const [
+         {"Register":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+         {"Login":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+         {"Home":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+         {"Account":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+         {"Settings":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Register":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Login":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Home":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Account":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Settings":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Register":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Login":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Home":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Account":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Settings":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Register":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Login":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Home":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Account":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Settings":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Register":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Login":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Home":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Account":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Settings":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Register":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Login":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Home":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Account":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+          {"Settings":"https://xd.adobe.com/view/d2210a85-f229-4d0c-a93d-f009743fb543-8772/"},
+        ],
+      ), */
+        home: FutureBuilder(
+            future: _init,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const Center(child: Text("ERROR"));
+              }
+              if (snapshot.connectionState == ConnectionState.done) {
+                //    return username == '' ? const LoginScreen() : const Home();
+                return username == '' ? const LoginScreen() : const Home();
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
-              }),
+              }
+              return const Center(child: CircularProgressIndicator());
+            }),
       ),
     );
   }
@@ -84,7 +117,7 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
   // Override behavior methods and getters like dragDevices
   @override
   Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-  };
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }

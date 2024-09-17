@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lottie/lottie.dart';
-import 'package:storebucket/home/home.dart';
-import 'package:storebucket/home/widget/login.dart';
 import 'package:storebucket/managers/shared_preference_manager.dart';
-import 'package:storebucket/project/project_detail.dart';
+import 'package:storebucket/views/home/home.dart';
+import 'package:storebucket/views/home/widget/login.dart';
+import 'package:storebucket/views/project/project_detail.dart';
 
 class Project extends StatefulWidget {
   const Project({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class Project extends StatefulWidget {
 
 class _ProjectState extends State<Project> {
   final Stream<QuerySnapshot> _projectStream =
-      FirebaseFirestore.instance.collection('project').snapshots();
+  FirebaseFirestore.instance.collection('project').snapshots();
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -60,8 +60,8 @@ class _ProjectState extends State<Project> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(context,
                     MaterialPageRoute(builder: (context) {
-                  return const Home();
-                }), (route) => false);
+                      return const Home();
+                    }), (route) => false);
               },
               child: const Text("DASHBOARD")),
           ElevatedButton(
@@ -88,42 +88,42 @@ class _ProjectState extends State<Project> {
               color: Colors.blue,
               child: width > 1220
                   ? Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: width * 0.05,
-                              right: width * 0.05,
-                              top: height * 0.05),
-                          child: const Text(
-                            "OUR PROJECTS ",
-                            style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: width * 0.05,
-                          ),
-                          child: const Text(
-                            "UI/UX LINKS AND SOURCE CODE",
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.normal,
-                                color: Colors.white),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            textAlign: TextAlign.left,
-                          ),
-                        )
-                      ],
-                    )
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: width * 0.05,
+                        right: width * 0.05,
+                        top: height * 0.05),
+                    child: const Text(
+                      "OUR PROJECTS ",
+                      style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: width * 0.05,
+                    ),
+                    child: const Text(
+                      "UI/UX LINKS AND SOURCE CODE",
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.white),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      textAlign: TextAlign.left,
+                    ),
+                  )
+                ],
+              )
                   : const SizedBox(),
             ),
             StreamBuilder(
@@ -151,45 +151,45 @@ class _ProjectState extends State<Project> {
                   if (snapshot.hasData) {
                     return snapshot.data!.docs.isNotEmpty
                         ? SizedBox(
-                            height: height,
-                            width: width,
-                            child: AlignedGridView.count(
-                              padding: EdgeInsets.only(
-                                  left: height * 0.1,
-                                  right: width * 0.1,
-                                  top: height * 0.2,
-                                  bottom: height * 0.1),
-                              crossAxisCount: 4,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                              itemCount: snapshot.data!.docs.length,
-                              itemBuilder: (context, index) {
-                                var project = snapshot.data!.docs[index];
-                                return projectTile(context,
-                                    projectTitle: project['title']!,
-                                    description: project['description'],
-                                    uiLinks: project['code'],
-                                    name: project['name'],
-                                    linkmap: project['linkmap'],
-                                    id: snapshot.data!.docs[index].id);
-                              },
-                            ),
-                          )
+                      height: height,
+                      width: width,
+                      child: AlignedGridView.count(
+                        padding: EdgeInsets.only(
+                            left: height * 0.1,
+                            right: width * 0.1,
+                            top: height * 0.2,
+                            bottom: height * 0.1),
+                        crossAxisCount: 4,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          var project = snapshot.data!.docs[index];
+                          return projectTile(context,
+                              projectTitle: project['title']!,
+                              description: project['description'],
+                              uiLinks:"",
+                              name: project['name'],
+                              linkmap: project['linkmap'],
+                              id: snapshot.data!.docs[index].id);
+                        },
+                      ),
+                    )
                         : Padding(
-                            padding: EdgeInsets.only(
-                                left: height * 0.1,
-                                right: width * 0.1,
-                                top: height * 0.2,
-                                bottom: height * 0.1),
-                            child: const Center(
-                                child: Text(
-                              "NO PROJECTS",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                            )),
-                          );
+                      padding: EdgeInsets.only(
+                          left: height * 0.1,
+                          right: width * 0.1,
+                          top: height * 0.2,
+                          bottom: height * 0.1),
+                      child: const Center(
+                          child: Text(
+                            "NO PROJECTS",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          )),
+                    );
                   }
                   return const CircularProgressIndicator();
                 })),
@@ -201,11 +201,11 @@ class _ProjectState extends State<Project> {
 
   Widget projectTile(BuildContext context,
       {String? projectTitle,
-      String? description,
-      String? uiLinks,
-      String? id,
-      String? name,
-      List<dynamic>? linkmap}) {
+        String? description,
+        String? uiLinks,
+        String? id,
+        String? name,
+        List<dynamic>? linkmap}) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return InkWell(
@@ -271,18 +271,39 @@ class _ProjectState extends State<Project> {
               ),
               Home.username == name
                   ? Positioned(
-                      top: 0,
-                      right: 0,
-                      child: IconButton(
-                          onPressed: () {
-                            _deleteProject(id);
-                          },
-                          icon: Icon(
-                            Icons.delete,
-                            size: 18,
-                            color: Colors.red.withOpacity(0.9),
-                          )),
-                    )
+                top: 0,
+                right: 0,
+                child: IconButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            content: const Padding(
+                              padding: EdgeInsets.all(50.0),
+                              child: Text(
+                                  'Do you want to delete the project?'),
+                            ),
+                            actions: [
+                              ElevatedButton(
+                                  onPressed: () {
+                                    _deleteProject(id);
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Delete')),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Cancel'))
+                            ],
+                          ));
+                    },
+                    icon: Icon(
+                      Icons.delete,
+                      size: 18,
+                      color: Colors.red.withOpacity(0.9),
+                    )),
+              )
                   : const SizedBox(),
             ],
           )),

@@ -7,12 +7,17 @@ class LinkProvider extends ChangeNotifier {
   List<String> linkList = [];
   List<String> linkNameList = [];
   List<Map<String, String>> linkMap = [];
-  String errorMessage = '';
+  String? linkTitleErrorMessage;
+  String? linkErrorMessage;
+
   bool isLinkCorrect = false;
   addLink() async {
-    linkMap.add(
-        {linkTitleController.text.toString(): linkController.text.toString()});
-    errorMessage = '';
+    linkMap.add({
+      "title": linkTitleController.text.toString(),
+      "url": linkController.text.toString()
+    });
+    linkTitleErrorMessage = null;
+    linkErrorMessage = null;
     linkController.clear();
     linkTitleController.clear();
 
@@ -30,6 +35,21 @@ class LinkProvider extends ChangeNotifier {
 
   removeLink(int index) {
     linkMap.removeAt(index);
+    notifyListeners();
+  }
+
+  setLinkTitleErrorMessage({String? error}) {
+    linkTitleErrorMessage = error;
+    notifyListeners();
+  }
+
+  setLinkErrorMessage({String? error}) {
+    linkErrorMessage = error;
+    notifyListeners();
+  }
+
+  clearList(){
+    linkMap=[];
     notifyListeners();
   }
 }
